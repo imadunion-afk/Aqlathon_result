@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Achievement - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   
+    <!-- Firebase SDKs -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+      // --- MODIFIED: Removed all Auth imports ---
+      
+      // --- 1. Firebase Config (MODIFIED: Using hardcoded config from your other files) ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyDEJa-CTRHH1dIdXkqlVz2kYzaVwDogA",
+        authDomain: "achivement-upload.firebaseapp.com",
+        projectId: "achivement-upload",
+        storageBucket: "achivement-upload.appspot.com",
+        messagingSenderId: "252939747632",
+        appId: "1:252939747632:web:607df0b9d6543ffc6a88f5",
+        measurementId: "G-SPVJ7VLTCH"
+      };
+
+      // --- 3. Get Form Elements ---
+      const uploadForm = document.getElementById('upload-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const statusMessage = document.getElementById('status-message');
+
+      // --- NEW: Add a check for missing config ---
+      if (!firebaseConfig) {
+          console.error("Firebase config is missing. Cannot initialize app.");
+          statusMessage.textContent = 'Error: Firebase config not found.';
+          statusMessage.style.color = 'red';
+          // Stop execution if config is missing
+          throw new Error("Firebase config is not available."); 
+      }
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      // --- REMOVED: All Auth initialization ---
+
+      // --- 2. Cloudinary Config (from your screenshot) ---
+      const CLOUDINARY_CLOUD_NAME = "dchwv07vqr";
+      const CLOUDINARY_API_KEY = "913777682857524"; 
+      const CLOUDINARY_UPLOAD_PRESET = "imadunion_upload"; 
+      const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+      
+      // --- REMOVED: Auth state listener and sign-in logic ---
+      // The button is now enabled by default.
+      statusMessage.textContent = 'Ready to upload.';
+      statusMessage.style.color = 'green';
+
+
+      // --- 4. Add Submit Event Listener ---
+      uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // --- REMOVED: Auth Check ---
+
+        // Get form values
+        const title = document.getElementById('title').value;
+        const category = document.getElementById('category').value;
+        const date = document.getElementById('date').value;
+        const imageFile = document.getElementById('image').files[0];
+
+        if (!imageFile) {
+          statusMessage.textContent = 'Please select an image file.';
+          statusMessage.style.color = 'red';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading...';
+        statusMessage.textContent = 'Uploading image to Cloudinary...';
+        statusMessage.style.color = '#333';
+
+        try {
+          // --- 5. Upload to Cloudinary ---
+          const formData = new FormData();
+          formData.append('file', imageFile);
+          formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+          formData.append('api_key', CLOUDINARY_API_KEY); 
+
+          const cloudinaryResponse = await fetch(CLOUDINARY_API_URL, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (!cloudinaryResponse.ok) {
+            const err = await cloudinaryResponse.json();
+            // Show a more helpful error if the preset is wrong
+            if (err.error.message.includes("preset not found")) {
+                throw new Error(`Cloudinary Error: Upload preset '${CLOUDINARY_UPLOAD_PRESET}' not found. Please create it first.`);
+            }
+            throw new Error(`Cloudinary Error: ${err.error.message}`);
+          }
+
+          const cloudinaryData = await cloudinaryResponse.json();
+          const imageUrl = cloudinaryData.secure_url; // The URL we want to save
+
+          statusMessage.textContent = 'Image uploaded. Saving data to Firebase...';
+
+          // --- 6. Save to Firebase Firestore ---
+          // This should now work (assuming rules are open, like in news-upload.html)
+          await addDoc(collection(db, "achievements"), {
+            title: title,
+            category: category,
+            date: date,
+            imageUrl: imageUrl, // Save the Cloudinary URL
+            createdAt: serverTimestamp() // For sorting
+          });
+
+          // --- 7. Success ---
+          statusMessage.textContent = 'Achievement uploaded successfully!';
+          statusMessage.style.color = 'green';
+          uploadForm.reset();
+
+        } catch (error) {
+          console.error("Upload Error:", error);
+          // --- NEW: Check for Firestore permission error ---
+          if (error.message.includes("permission-denied")) {
+               statusMessage.textContent = 'Error: Firebase permission denied. Check security rules.';
+          } else {
+               statusMessage.textContent = `Error: ${error.message}`;
+          }
+          statusMessage.style.color = 'red';
+        } finally {
+          // Re-enable button
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Upload Achievement';
+        }
+      });
+
+    </script>
+    <style>
+        :root {
+            --primary-color: #0c5079;
+            --secondary-color: #37a8df;
+            --light-gray: #f4f6f9;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .upload-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 { color: var(--primary-color); margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 500; margin-bottom: 8px; }
+        input, select {
+            width: 100%; padding: 12px; font-size: 15px;
+            border: 1px solid #ddd; border-radius: 8px;
+            outline: none; font-family: 'Poppins', sans-serif;
+            box-sizing: border-box; /* Added for consistency */
+        }
+        input[type="file"] {
+            padding: 10px; /* Specific padding for file input */
+        }
+        button {
+            background-color: var(--primary-color); color: white;
+            width: 100%; padding: 15px; border: none; border-radius: 8px;
+            font-size: 16px; font-weight: 500; cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover:not(:disabled) { background-color: var(--secondary-color); }
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+        #status-message { margin-top: 20px; text-align: center; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h1>Upload New Achievement</h1>
+        <p>This form will upload to Cloudinary and save the URL to Firebase.</p>
+
+        <form id="upload-form">
+            <div class="form-group">
+                <label for="title">Achievement Title</label>
+                <input type="text" id="title" placeholder="e.g., Inter-Collegiate Debate Champions" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" required>
+                    <option value="academics">Academics</option>
+                    <option value="sports">Sports</option>
+                    <option value="arts">Arts & Culture</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Date of Achievement</label>
+                <input type="date" id="date" required>
+            </div>
+            <div class="form-group">
+                <label for="image">Achievement Image</label>
+                <input type="file" id="image" accept="image/*" required>
+            </div>
+            <!-- The button is now enabled by default -->
+            <button type="submit" id="submit-btn">Upload Achievement</button>
+        </form>
+        <p id="status-message"></p>
+    </div>
+    
+</body>
+</html>
+
+  

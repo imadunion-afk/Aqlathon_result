@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - IMADUNION</title>
+    <link rel="icon" href="logo.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* Global Styles from home-res.css */
+        :root {
+            --primary-color: #0c5079;
+            --secondary-color: #37a8df;
+            --light-gray: #f0f4f7;
+            --white: #ffffff;
+            --text-light: rgb(192, 180, 180);
+            --font-main: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--white);
+            color: #333;
+        }
+
+        /* Animation Styles */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--white);
+        }
+
+        .navbar {
+            /* Max width removed from here, will be added in media query */
+            width: 100%;
+            height: 70px;
+            background-color: var(--primary-color);
+            border-radius: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .logo-container {
+            width: 130px;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .menu-toggle {
+            display: block;
+            font-size: 32px;
+            color: var(--white);
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .rightside {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            background: var(--primary-color);
+            position: absolute;
+            top: 78px;
+            /* Default mobile position */
+            right: 0;
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            gap: 0;
+        }
+
+        .rightside.show {
+            display: flex;
+        }
+
+        .rightside a {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 500;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* New Active State CSS for mobile */
+        .rightside a.active {
+            color: #000;
+            /* Black text color */
+            background-color: var(--white);
+            /* White background for contrast */
+            border-radius: 12px;
+            /* Slight rounding for the mobile item */
+            font-weight: 600;
+        }
+
+        .rightside a:hover:not(.active) {
+            background-color: var(--secondary-color);
+        }
+
+        .footer-container {
+            padding: 40px 20px;
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .footer-section {
+            min-width: 100%;
+        }
+
+        .footer-logo {
+            width: 150px;
+            margin: 0 auto 20px;
+        }
+
+        .footer-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        .footer-links,
+        .footer-social {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li,
+        .footer-social li {
+            margin: 10px 0;
+        }
+
+        .footer-links a,
+        .footer-social a {
+            text-decoration: none;
+            color: var(--text-light);
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .footer-links a:hover,
+        .footer-social a:hover {
+            color: var(--white);
+        }
+
+        .footer-social i {
+            font-size: 20px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .footer-social .fa-instagram {
+            color: #E1306C;
+        }
+
+        .footer-social .fa-facebook {
+            color: #1877F2;
+        }
+
+        .footer-social .fa-whatsapp {
+            color: #25D366;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        @media (min-width: 768px) {
+            .menu-toggle {
+                display: none;
+            }
+
+            .rightside {
+                display: flex;
+                position: static;
+                flex-direction: row;
+                width: auto;
+                background: none;
+                box-shadow: none;
+                padding: 0;
+                gap: 20px;
+            }
+
+            .rightside a {
+                padding: 8px 15px;
+                border-radius: 20px;
+                min-width: 130px;
+                /* Added for consistent size */
+                text-align: center;
+                /* Added for consistent text alignment */
+                width: auto;
+            }
+
+            /* Added padding and border-radius for desktop active state */
+            .rightside a:hover:not(.active) {
+                background: none;
+                color: var(--secondary-color);
+            }
+
+            /* Desktop Active State Specifics */
+            .rightside a.active {
+                color: #000;
+                background-color: var(--white);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            .navbar {
+                height: 78px;
+                /* MODIFIED: Matched home.html */
+                border-radius: 43px;
+                /* MODIFIED: Matched home.html */
+            }
+
+            .footer-container {
+                padding: 60px 40px;
+            }
+
+            /* This rule for .rightside top: 78px is for mobile dropdown, correct */
+
+            .footer-container {
+                padding: 60px 40px;
+            }
+
+            /* Removed the incorrect top: 136px rule */
+
+            .footer-content {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                text-align: left;
+                gap: 30px;
+            }
+
+            .footer-section {
+                flex: 1;
+                min-width: calc(50% - 20px);
+            }
+
+            .footer-logo {
+                margin: 0 0 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .rightside {
+                gap: 32px;
+            }
+
+            /* Removed the max-width: 1198px rule for .navbar */
+
+            .footer-section {
+                min-width: 220px;
+            }
+
+            .footer-content {
+                flex-wrap: nowrap;
+            }
+        }
+
+        /* MODIFIED: Added 1280px media query to match home.html */
+        @media (min-width: 1280px) {
+            .navbar,
+            .footer-content {
+                max-width: 1328px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        /* Styles from about-res.css */
+        .about-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/arabesque.png");
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .about-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-hero h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .about-hero p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        /* --- NEW ABOUT US CARD STYLING (Based on user image) --- */
+        .about-mission-wrapper {
+            padding: 60px 20px;
+            background-color: #f0f4f7;
+            /* Light background color similar to the image */
+        }
+
+        .about-mission-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 40px 20px;
+            /* Adjusted padding for mobile */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .about-mission-content {
+            position: relative;
+            z-index: 10;
+            padding: 0;
+            text-align: left;
+        }
+
+        .about-mission-card h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .about-mission-content p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        /* Background Graphics - Blue Circle (Top Right) */
+        .about-mission-card::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        /* Background Graphics - Gray Arcs (Left Side) */
+        .about-mission-card::before {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            /* Simple, subtle arcs using border technique for better cross-browser support */
+            border-radius: 50%;
+            border: 2px solid #e9ecef;
+            opacity: 0.8;
+            z-index: 5;
+            transform: rotate(45deg);
+        }
+
+        @media (min-width: 768px) {
+            .about-mission-card {
+                padding: 60px;
+            }
+
+            .about-mission-card h2 {
+                font-size: 48px;
+            }
+        }
+
+        /* --- END NEW ABOUT US CARD STYLING --- */
+
+
+        .team-section-container {
+            padding: 60px 20px;
+            background-color: var(--light-gray);
+        }
+
+        /* The main grid for all members */
+        .team-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* A wrapper specifically for the 2 in-charges to handle their specific 2-column layout */
+        .incharge-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        /* Card Styles remain the same */
+        .team-member-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-member-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-image-container {
+            height: 280px;
+            background-color: #e9eef2;
+            overflow: hidden;
+        }
+
+        .card-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+        }
+
+        .card-content {
+            padding: 25px 15px;
+        }
+
+        .member-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0 0 5px;
+        }
+
+        .member-title {
+            font-size: 15px;
+            color: #555;
+        }
+
+        .incharge-card {
+            background-color: var(--primary-color);
+        }
+
+        .incharge-card .member-name {
+            color: var(--white);
+        }
+
+        .incharge-card .member-title {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 600px) {
+
+            /* On small tablets, show 2 per row for all cards */
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Incharge wrapper spans full width and uses 2 columns internally */
+            .incharge-wrapper {
+                grid-column: 1 / -1;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Make the 9 regular members start on the next available row */
+            .regular-members-start {
+                grid-column: 1 / -1;
+                display: contents;
+            }
+        }
+
+        /* 3-in-a-row layout on large screens (992px) */
+        @media (min-width: 992px) {
+            .about-hero {
+                padding: 80px 40px;
+            }
+
+            .about-hero h1 {
+                font-size: 42px;
+            }
+
+            .team-section-container {
+                padding: 80px 40px;
+            }
+
+            /* Main team grid: 3 columns for 9 members (3x3 grid) */
+            .team-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            /* The incharge wrapper spans all 3 columns and uses 2 columns internally, centered */
+            .incharge-wrapper {
+                grid-column: 1 / -1;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                max-width: 700px;
+                margin: 0 auto 25px;
+            }
+
+            /* Ensure the regular members start cleanly in the next row of the 3-column grid */
+            .regular-members-start {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (min-width: 1200px) {
+
+            /* Stick to 3 columns for the team members */
+            .team-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* --- Vision & Mission Section --- */
+        /* --- NEW: Core Values (Vision & Mission) Section --- */
+        .core-values-container {
+            padding: 60px 20px;
+            background-color: var(--white);
+        }
+
+        /* This is the "Core Values" title */
+        .section-title {
+            font-size: 2.5rem;
+            /* 40px */
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 3rem;
+            /* 48px */
+        }
+
+        .core-values-grid {
+            display: grid;
+            /* Using Grid for the 2-column layout */
+            grid-template-columns: 1fr;
+            /* 1 column on mobile */
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .value-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            /* This is key to making the blur effect work */
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            display: flex;
+            align-items: flex-end;
+            /* Aligns the white content box to the bottom */
+            padding: 1.5rem;
+            /* 24px padding */
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-card-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(3px);
+            /* This creates the blur effect from your image */
+            transform: scale(1.05);
+            /* Zooms image slightly to hide blurred edges */
+        }
+
+        .value-card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            /* Slight dark overlay to help text stand out */
+            z-index: 1;
+        }
+
+        .value-card-content {
+            position: relative;
+            z-index: 2;
+            /* This creates the white box from your image */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            /* Blurs the background behind the white box */
+            border-radius: 12px;
+            padding: 2rem;
+            /* 32px */
+            width: 100%;
+        }
+
+        .value-card-content h3 {
+            font-size: 1.5rem;
+            /* 24px */
+            font-weight: 700;
+            color: #333;
+            /* Darker title as in the image */
+            margin-bottom: 1rem;
+            /* 16px */
+        }
+
+        .value-card-content p {
+            font-size: 1rem;
+            /* 16px */
+            line-height: 1.6;
+            color: #555;
+            margin: 0;
+            margin-bottom: 1.5rem;
+            /* 24px */
+        }
+
+        .read-more-link {
+            font-size: 0.9rem;
+            /* 14.4px */
+            font-weight: 600;
+            color: #666;
+            /* Gray color from the image */
+            display: inline-block;
+        }
+
+        /* --- Responsive styles for Tablet and Desktop --- */
+        @media (min-width: 768px) {
+            .core-values-grid {
+                grid-template-columns: repeat(2, 1fr);
+                /* 2 columns side-by-side */
+            }
+        }
+
+
+        .vision-mission-flex {
+            display: flex;
+            flex-direction: column;
+            /* Stack cards on mobile by default */
+            gap: 25px;
+            /* Spacing between cards */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .vm-card {
+            background-color: var(--light-gray);
+            /* Light gray card background */
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary-color);
+            /* Accent border */
+            transition: transform 0.3s ease;
+        }
+
+        .vm-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Different accent color for the Mission card */
+        .vm-card.mission-card {
+            border-left-color: var(--secondary-color);
+        }
+
+        .vm-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Optional: Different title color for mission */
+        .vm-card.mission-card h3 {
+            color: #333;
+        }
+
+        .vm-card p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #555;
+            margin: 0;
+        }
+
+        /* --- Responsive styles for Tablet and Desktop --- */
+        @media (min-width: 768px) {
+            .vision-mission-flex {
+                flex-direction: row;
+                /* Place cards side-by-side */
+            }
+
+            .vm-card {
+                flex: 1;
+                /* Each card will take up 50% of the available space */
+                /* min-width: 300px; is not strictly needed here but can be added if preferred */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="nav-container">
+        <nav class="navbar">
+            <div class="left-side">
+                <div class="logo-container">
+                    <img src="logo+.png" alt="IMADUNION Logo">
+                </div>
+            </div>
+            <div class="menu-toggle">☰</div>
+            <div class="rightside">
+                <a class="home" href="home.html">Home</a>
+                <a class="aboutus active" href="about-us.html">About Us</a>
+                <a class="news-events" href="news&event.html">News & Events</a>
+                <a class="achievements" href="achievements.html">Achievements</a>
+                <a class="contactus" href="contact-us.html">Contact Us</a>
+            </div>
+        </nav>
+    </div>
+
+    <section class="about-mission-wrapper">
+        <div class="about-mission-card fade-in-element">
+            <div class="about-mission-content">
+                <h2>About Us</h2>
+
+                <p>
+                    IMAD, established on December 15, 2012, is dedicated to the holistic development of students.
+                    Striving for complete academic and co-curricular progression, we create pathways for learning,
+                    skill-building, and personal growth. Serving the students of SFADC, IMAD provides modern
+                    facilities and programs designed to meet the demands of today’s educational landscape.
+                </p>
+
+                <p>
+                    Our focus extends beyond academics to nurturing talents, encouraging creativity, and
+                    fostering leadership, ensuring students are well-prepared for life beyond the classroom.
+                    At IMAD, empowering potential and fostering achievement is our core commitment.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section class="core-values-container">
+        <h2 class="section-title fade-in-element">Core Values</h2>
+
+        <div class="core-values-grid">
+
+            <div class="value-card fade-in-element">
+                <img src="liora.JPG" alt="Mission Background" class="value-card-bg">
+                <div class="value-card-overlay"></div>
+
+                <div class="value-card-content">
+                    <h3>Our Mission</h3>
+                    <p>
+                        To provide students with opportunities for leadership, learning, and personal growth
+                        rooted in Islamic principles. We promote academic excellence, community engagement, and teamwork
+                        while nurturing talent and preserving our Islamic identity.
+                    </p>
+                    <span class="read-more-link">→ READ MORE</span>
+                </div>
+            </div>
+
+            <div class="value-card fade-in-element">
+                <img src="5939110039 (1).png" alt="Vision Background" class="value-card-bg">
+                <div class="value-card-overlay"></div>
+
+                <div class="value-card-content">
+                    <h3>Our Vision</h3>
+                    <p>
+                        To create a student community guided by Islamic values, where knowledge, character,
+                        and leadership come together. We aim to empower students to grow academically, morally, and
+                        socially, making a positive impact on society.
+                    </p>
+                    <span class="read-more-link">→ READ MORE</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <main class="team-section-container">
+        <div class="team-grid">
+
+            <div class="incharge-wrapper fade-in-element">
+                <div class="team-member-card incharge-card">
+                    <div class="card-image-container">
+                        <img src="anasvm.jpeg" alt="Union In-charge">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="member-name">Anas Hudawi Manjeri</h3>
+                        <p class="member-title">Union In-charge</p>
+                    </div>
+                </div>
+                <div class="team-member-card incharge-card">
+                    <div class="card-image-container">
+                        <img src="shibil.jpg" alt="Union In-charge">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="member-name">Shibil Hudawi Perinthalmanna</h3>
+                        <p class="member-title">Union In-charge</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="regular-members-start"></div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="1.JPG" alt="President">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Anas Ottayath</h3>
+                    <p class="member-title">President</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="adil.JPG" alt="Vice President">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Adil P</h3>
+                    <p class="member-title">Vice President</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="ck.JPG" alt="General Secretary">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Midlaj CK</h3>
+                    <p class="member-title">General Secretary</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="4.JPG" alt="Joint Secretary">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Anshid k</h3>
+                    <p class="member-title">Joint Secretary</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="suhail.JPG" alt="Office Secretary">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Suhail AK</h3>
+                    <p class="member-title">Office Secretary</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="midlaj kk.JPG" alt="Program Secretary">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Midlaj KK</h3>
+                    <p class="member-title">Program Secretary</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="5.JPG" alt="PRO">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Dilshad Kizhisseri</h3>
+                    <p class="member-title">PRO</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="6.JPG" alt="Treasurer">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Adil N</h3>
+                    <p class="member-title">Treasurer</p>
+                </div>
+            </div>
+
+            <div class="team-member-card fade-in-element">
+                <div class="card-image-container">
+                    <img src="7.JPG" alt="Financial Assistant">
+                </div>
+                <div class="card-content">
+                    <h3 class="member-name">Shabeer</h3>
+                    <p class="member-title">Financial Assistant</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <footer class="footer-container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="logo+.png" alt="Footer Logo" class="footer-logo">
+                <p class="footer-text">
+                    Brief description of IMADUNION or a mission statement can go here.
+                </p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="news&event.html">News & Events</a></li>
+                    <li><a href="achievements.html">Achievements</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Our Social Media</h4>
+                <ul class="footer-social">
+                    <li><a href="https://www.instagram.com/imad_odamala?utm_source=ig_web_button_share_sheet&igsh=MTNleG5wNmIwanIzZQ=="
+                            aria-label="Instagram"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+                    <li><a href="link" aria-label="Facebook"><i class="fa-brands fa-facebook"></i> Facebook</a></li>
+                    <li><a href="link" aria-label="Whatsapp"><i class="fa-brands fa-whatsapp"></i> Whatsapp</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 IMADUNION. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Mobile Menu Toggle ---
+        const menuToggle = document.querySelector('.menu-toggle');
+        const rightSide = document.querySelector('.rightside');
+        if (menuToggle && rightSide) {
+            menuToggle.addEventListener('click', () => {
+                rightSide.classList.toggle('show');
+            });
+        }
+
+        // --- Fade-in Animation on Scroll ---
+        const fadeInElements = document.querySelectorAll('.fade-in-element');
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        fadeInElements.forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+
+</html>

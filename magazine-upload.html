@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Upload Magazine</title>
+    <!-- Using the same fonts and icons as the publications page -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS Variables (using the same theme as publications-upload.html) --- */
+        :root {
+            --primary-color: #543d85; /* Deep Purple */
+            --primary-light: #6a529e;
+            --secondary-color: #668bb4; /* Muted Blue */
+            --bg-light: #f8f9fa; /* Off-white background */
+            --text-dark: #333333;
+            --text-grey: #666666;
+            --transition: all 0.3s ease-in-out;
+        }
+
+        /* --- Global Page Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- Form Container --- */
+        .upload-container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        /* --- Form Header --- */
+        .form-header {
+            background-color: var(--primary-color);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+        .form-header h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* --- Form Body --- */
+        form {
+            padding: 40px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(84, 61, 133, 0.2);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* --- Meta Fields Styling --- */
+        .form-group-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .form-group-checkbox input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        .form-group-checkbox label {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+        #meta-fields-container {
+            display: none; /* Hidden by default */
+            border: 1px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            background: #fdfcff;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* --- Image Upload Status --- */
+        #image-status {
+            font-size: 0.9em; 
+            color: var(--text-grey); 
+            margin-top: 10px; 
+            text-align: center;
+            height: 0;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        #image-status.visible {
+            height: auto;
+            opacity: 1;
+        }
+
+        /* --- Buttons (Themed) --- */
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: #ffffff;
+        }
+        .btn-secondary:hover {
+            background-color: #5a7ea6;
+        }
+        
+        .btn-outline {
+            background-color: #ffffff;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .btn-outline:hover {
+            background-color: #fdfcff;
+            color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            margin-top: 15px;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            border-color: #ccc;
+            color: #888;
+        }
+
+        /* --- Feedback Message --- */
+        #form-status {
+            text-align: center;
+            padding: 15px;
+            margin: 20px 0 0 0;
+            border-radius: 10px;
+            display: none; /* Hidden by default */
+        }
+        #form-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        #form-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="upload-container">
+        
+        <div class="form-header">
+            <h2>Upload New Magazine</h2>
+        </div>
+
+        <form id="upload-form-element">
+            
+            <div class="form-group">
+                <label for="title">Magazine Title</label>
+                <input type="text" id="title" placeholder="e.g., Al-Isnad: Journal of Hadith Studies" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Magazine Description</label>
+                <textarea id="description" placeholder="A brief summary of the magazine's content..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="year">Year</label>
+                <input type="number" id="year" placeholder="e.g., 2024" required>
+            </div>
+            
+            <div class="form-group" style="margin-top: 5px; margin-bottom: 30px;">
+                <label for="upload-image-widget-btn">Magazine Cover Image</label>
+                <button type="button" id="upload-image-widget-btn" class="btn btn-outline">
+                    <i class="fas fa-image"></i> Upload Cover Image
+                </button>
+                <div id="image-status"></div>
+            </div>
+
+            <div class="form-group-checkbox">
+                <input type="checkbox" id="include-meta">
+                <label for="include-meta">Include Magazine Meta (Volume, Issue)?</label>
+            </div>
+
+            <div id="meta-fields-container">
+                <div class="meta-grid">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="volume">Volume No.</label>
+                        <input type="text" id="volume" placeholder="e.g., 03">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="issue">Issue No.</label>
+                        <input type="text" id="issue" placeholder="e.g., 01">
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" id="upload-widget-btn" class="btn btn-secondary">
+                <i class="fas fa-upload"></i> 1. Select Magazine PDF
+            </button>
+            
+            <div id="form-status"></div>
+            
+            <button type="submit" id="submit-btn" class="btn btn-primary" disabled>
+               2. Save Magazine to Database
+            </button>
+        </form>
+
+    </div>
+
+    <!-- Firebase SDK (using v8 to match original file) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <!-- Cloudinary Widget SDK -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>  
+
+    <script>
+        // --- NEW FIREBASE CONFIG ---
+      const firebaseConfig = {
+  apiKey: "AIzaSyCeLfk-STfRHLCHKRT1Id8daqVZYwvBoqA",
+  authDomain: "achivement-upload.firebaseapp.com",
+  projectId: "achivement-upload",
+  storageBucket: "achivement-upload.firebasestorage.app",
+  messagingSenderId: "252939747632",
+  appId: "1:252939747632:web:607dfd589a6843f5c688f5",
+  measurementId: "G-SPVJVHZYC8"
+};
+
+
+        // --- NEW CLOUDINARY DETAILS ---
+        const CLOUDINARY_CLOUD_NAME = "dchwv07vqr";
+        const CLOUDINARY_UPLOAD_PRESET = "imadunion_upload";
+
+        // --- Initialize Firebase ---
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // --- Get HTML Elements ---
+        const uploadForm = document.getElementById('upload-form-element');
+        const formStatus = document.getElementById('form-status');
+        const uploadWidgetBtn = document.getElementById('upload-widget-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const includeMetaCheck = document.getElementById('include-meta');
+        const metaFieldsContainer = document.getElementById('meta-fields-container');
+        const uploadImageWidgetBtn = document.getElementById('upload-image-widget-btn');
+        const imageStatusEl = document.getElementById('image-status');
+
+
+        // These variables will hold the URLs after upload
+        let uploadedPdfUrl = null;
+        let uploadedImageUrl = null;
+
+        // --- Show/Hide Meta Fields Logic ---
+        includeMetaCheck.addEventListener('change', () => {
+            if (includeMetaCheck.checked) {
+                metaFieldsContainer.style.display = 'block';
+            } else {
+                metaFieldsContainer.style.display = 'none';
+            }
+        });
+
+        // --- Cloudinary Widget Logic (FOR PDF) ---
+        const myPdfWidget = cloudinary.createUploadWidget({
+            cloudName: CLOUDINARY_CLOUD_NAME, 
+            uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+            sources: [ "local" ],
+            acceptedFiles: "application/pdf",
+            maxFiles: 1
+            // --- EDITED: REMOVED THIS LINE ---
+            // folder: "magazine_pdfs" 
+        }, 
+        (error, result) => { 
+            if (!error && result && result.event === "success") { 
+                console.log('PDF Upload Success! File Info: ', result.info);
+                
+                uploadedPdfUrl = result.info.secure_url; 
+                
+                showStatus('PDF selected successfully! Ready to save.', 'success');
+                uploadWidgetBtn.innerHTML = `<i class="fas fa-check"></i> PDF Selected: ${result.info.original_filename}`;
+                
+                submitBtn.disabled = false;
+            }
+            if (error) {
+                console.error("Cloudinary PDF Error:", error);
+                showStatus('PDF upload failed. Please try again.', 'error');
+            }
+        });
+
+        uploadWidgetBtn.addEventListener('click', () => {
+            myPdfWidget.open();
+        }, false);
+        
+        
+        // --- Cloudinary Widget Logic (FOR IMAGE) ---
+        const myImageWidget = cloudinary.createUploadWidget({
+            cloudName: CLOUDINARY_CLOUD_NAME, 
+            uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+            sources: [ "local" ],
+            acceptedFiles: "image/*",
+            maxFiles: 1
+            // --- EDITED: REMOVED THIS LINE ---
+            // folder: "magazine_images"
+        }, 
+        (error, result) => { 
+            if (!error && result && result.event === "success") { 
+                console.log('Image Upload Success! File Info: ', result.info);
+                
+                uploadedImageUrl = result.info.secure_url; 
+                
+                uploadImageWidgetBtn.innerHTML = `<i class="fas fa-check"></i> Image Selected`;
+                imageStatusEl.textContent = `File: ${result.info.original_filename}`;
+                imageStatusEl.classList.add('visible');
+            }
+            if (error) {
+                console.error("Cloudinary Image Error:", error);
+                imageStatusEl.textContent = 'Image upload failed. Please try again.';
+                imageStatusEl.classList.add('visible');
+            }
+        });
+
+        uploadImageWidgetBtn.addEventListener('click', () => {
+            myImageWidget.open();
+        }, false);
+
+
+        // --- Final Form Submit Logic (Save to Firebase) ---
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            
+            if (!uploadedPdfUrl) {
+                showStatus('Please select and upload a Magazine PDF first.', 'error');
+                return;
+            }
+            
+            // Check if image is uploaded (making it optional, but recommended)
+            if (!uploadedImageUrl) {
+                 // You could show an error, but for now we'll allow it.
+                 // We will just save 'null' to the database for imageUrl.
+                 console.warn("No cover image selected. Proceeding without one.");
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Saving to database...";
+
+            try {
+                // Get the text values from the form
+                const newMagazine = {
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    year: document.getElementById('year').value || null,
+                    pdfUrl: uploadedPdfUrl, 
+                    imageUrl: uploadedImageUrl, // Will be null if not uploaded
+                    volume: null,
+                    issue: null,
+                    // Add a timestamp for when this was created
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // If checkbox is checked, add the meta values
+                if (includeMetaCheck.checked) {
+                    newMagazine.volume = document.getElementById('volume').value || null;
+                    newMagazine.issue = document.getElementById('issue').value || null;
+                }
+
+                // Add to Firestore in the "magazine" collection
+                const docRef = await db.collection("magazine").add(newMagazine);
+                
+                showStatus(`Success! Magazine saved.`, 'success');
+                uploadForm.reset(); 
+                
+                // Reset buttons and URLs
+                uploadedPdfUrl = null;
+                uploadedImageUrl = null; 
+                
+                uploadWidgetBtn.innerHTML = `<i class="fas fa-upload"></i> 1. Select Magazine PDF`;
+                uploadImageWidgetBtn.innerHTML = `<i class="fas fa-image"></i> Upload Cover Image`;
+                imageStatusEl.textContent = ''; 
+                imageStatusEl.classList.remove('visible'); 
+                
+                submitBtn.textContent = '2. Save Magazine to Database';
+                submitBtn.disabled = true; 
+                
+                includeMetaCheck.checked = false;
+                metaFieldsContainer.style.display = 'none';
+
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showStatus(`Error saving to database: ${error.message}`, 'error');
+                submitBtn.disabled = false; 
+                submitBtn.textContent = '2. Save Magazine to Database';
+            }
+        });
+
+        // --- Helper Function to show messages ---
+        function showStatus(message, type) {
+            formStatus.textContent = message;
+            formStatus.className = type; // 'success' or 'error'
+            formStatus.style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>
+

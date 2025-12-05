@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News & Events - IMADUNION</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Global Styles from home-res.css */
+        :root {
+          --primary-color: #0c5079;
+          --secondary-color: #37a8df;
+          --light-gray: #f0f4f7;
+          --white: #ffffff;
+          --text-light: rgb(192, 180, 180);
+          --font-main: 'Poppins', sans-serif;
+        }
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: var(--font-main);
+          background-color: var(--white);
+          color: #333;
+        }
+
+        .nav-container {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          padding: 15px;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          background-color: var(--white);
+        }
+
+        .navbar {
+          width: 100%;
+          height: 70px;
+          background-color: var(--primary-color);
+          border-radius: 35px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+          padding: 0 20px;
+          position: relative;
+        }
+
+        .logo-container {
+          width: 130px;
+        }
+
+        .logo-container img {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        .menu-toggle {
+          display: block;
+          font-size: 32px;
+          color: var(--white);
+          cursor: pointer;
+          z-index: 1001;
+        }
+
+        .rightside {
+          display: none;
+          flex-direction: column;
+          align-items: center;
+          background: var(--primary-color);
+          position: absolute;
+          top: 78px;
+          right: 0;
+          width: 100%;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+          padding: 20px 0;
+          gap: 0;
+        }
+
+        .rightside.show {
+          display: flex;
+        }
+
+        .rightside a {
+          text-decoration: none;
+          color: var(--white);
+          font-size: 18px;
+          font-weight: 500;
+          padding: 15px 0;
+          width: 100%;
+          text-align: center;
+          transition: color 0.3s ease, background-color 0.3s ease;
+        }
+        
+        /* New Active State CSS for mobile */
+        .rightside a.active {
+            color: #000; /* Black text color */
+            background-color: var(--white); /* White background for contrast */
+            border-radius: 12px; /* Slight rounding for the mobile item */
+            font-weight: 600;
+        }
+
+        .rightside a:hover:not(.active) {
+          background-color: var(--secondary-color);
+        }
+
+        .footer-container {
+          padding: 40px 20px;
+          background: var(--primary-color);
+          color: var(--white);
+        }
+        .footer-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 30px;
+        }
+        .footer-section { min-width: 100%; }
+        .footer-logo { width: 150px; margin: 0 auto 20px; }
+        .footer-title { font-size: 20px; margin-bottom: 15px; font-weight: bold; }
+        .footer-text { font-size: 14px; line-height: 1.6; color: var(--text-light); }
+        .footer-links, .footer-social { list-style: none; padding: 0; }
+        .footer-links li, .footer-social li { margin: 10px 0; }
+        .footer-links a, .footer-social a { text-decoration: none; color: var(--text-light); transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+        .footer-links a:hover, .footer-social a:hover { color: var(--white); }
+        .footer-social i { font-size: 20px; width: 20px; text-align: center; }
+        .footer-social .fa-instagram { color: #E1306C; }
+        .footer-social .fa-facebook { color: #1877F2; }
+        .footer-social .fa-whatsapp { color: #25D366; }
+        .footer-bottom { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; opacity: 0.8; }
+
+        @media (min-width: 768px) {
+            .menu-toggle { display: none; }
+            .rightside { 
+                display: flex; 
+                position: static; 
+                flex-direction: row; 
+                width: auto; 
+                background: none; 
+                box-shadow: none; 
+                padding: 0; 
+                gap: 20px; 
+            }
+            .rightside a { padding: 8px 15px; border-radius: 20px; min-width: 130px; text-align: center; width: auto; } /* Added for consistent size */
+            .rightside a:hover:not(.active) { background: none; color: var(--secondary-color); }
+            
+            /* Desktop Active State Specifics */
+            .rightside a.active {
+                color: #000;
+                background-color: var(--white);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+            
+            .navbar { height: 78px; border-radius: 43px; }
+            .footer-container { padding: 60px 40px; }
+            .footer-content { flex-direction: row; flex-wrap: wrap; align-items: flex-start; text-align: left; gap: 30px; }
+            .footer-section { flex: 1; min-width: calc(50% - 20px); }
+            .footer-logo { margin: 0 0 20px; }
+        }
+
+        @media (min-width: 1024px) {
+          .rightside { gap: 32px; }
+          .footer-section { min-width: 220px; }
+          .footer-content { flex-wrap: nowrap; }
+        }
+
+        /* Styles from news-res.css */
+        .news-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background-color: var(--primary-color);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/arabesque.png");
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .news-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .news-hero h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .news-grid-container {
+            padding: 60px 20px;
+            background-color: var(--light-gray);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .news-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .news-card-image img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            background-color: #eee; /* Placeholder bg */
+        }
+
+        .news-card-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .news-date {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .news-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .news-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .read-more-btn:hover {
+            color: var(--secondary-color);
+        }
+
+        @media (min-width: 768px) {
+            .news-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .news-hero {
+                padding: 80px 40px;
+            }
+            .news-grid-container {
+                padding: 80px 40px;
+            }
+            .news-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- =======================
+     Navigation Bar
+     ======================= -->
+<div id="navbar-placeholder" class="nav-container"></div>
+
+<!-- =======================
+     News Hero Section
+     ======================= -->
+<header class="news-hero">
+    <div class="news-hero-content">
+        <h1>News & Events</h1>
+        <p>Stay updated with the latest happenings, announcements, and stories from IMADUNION.</p>
+    </div>
+</header>
+
+<!-- =======================
+     News Grid Section
+     ======================= -->
+<main class="news-grid-container">
+    <div class="news-grid" id="newsGridContainer">
+        <!-- News cards will be injected here by JavaScript -->
+        <p style="text-align: center; color: #888; grid-column: 1 / -1;">Loading news...</p>
+    </div>
+</main>
+
+<!-- =======================
+     Footer
+     ======================= -->
+<footer id="footer-placeholder" class="footer-container"></footer>
+
+<!-- 
+    =======================
+     SCRIPT UPDATED 
+     - Changed to type="module"
+     - Added Firebase SDKs
+     - Replaced localStorage logic with Firebase fetch
+    ======================= 
+-->
+<script type="module">
+    // --- Firebase SDK Imports ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // --- Firebase Config (from your upload pages) ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDEJa-CTRHH1dIdXkqlVz2kYzaVwDogA",
+        authDomain: "achivement-upload.firebaseapp.com",
+        projectId: "achivement-upload",
+        storageBucket: "achivement-upload.appspot.com",
+        messagingSenderId: "252939747632",
+        appId: "1:252939747632:web:607df0b9d6543ffc6a88f5",
+        measurementId: "G-SPVJ7VLTCH"
+    };
+
+    // --- Initialize Firebase ---
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Updated navbar HTML with active class on "News & Events"
+        const navbarHTML = `
+            <nav class="navbar">
+                <div class="left-side">
+                    <div class="logo-container">
+                        <img src="logo+.png" alt="IMADUNION Logo">
+                    </div>
+                </div>
+                <div class="menu-toggle">&#9776;</div>
+                <div class="rightside">
+                    <a class="home" href="home.html">Home</a>
+                    <a class="aboutus" href="about-us.html">About Us</a>
+                    <a class="news-events active" href="news&event.html">News & Events</a>
+                    <a class="achievements" href="achievements.html">Achievements</a>
+                    <a class="contactus" href="contact-us.html">Contact Us</a>
+                </div>
+            </nav>
+        `;
+
+        const footerHTML = `
+            <div class="footer-content">
+              <div class="footer-section">
+                <img src="logo+.png" alt="Footer Logo" class="footer-logo">
+                <p class="footer-text">
+                  Brief description of IMADUNION or a mission statement can go here.
+                </p>
+              </div>
+              <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                  <li><a href="about-us.html">About Us</a></li>
+                  <li><a href="news&event.html">News & Events</a></li>
+                  <li><a href="achievements.html">Achievements</a></li>
+                  <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+              </div>
+             <div class="footer-section">
+                <h4 class="footer-title">Our Social Media</h4>
+                <ul class="footer-social">
+                  <li><a href="https://www.instagram.com/imad_odamala?utm_source=ig_web_button_share_sheet&igsh=MTNleG5wNmIwanIzZQ==" aria-label="Instagram"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+                  <li><a href="link" aria-label="Facebook"><i class="fa-brands fa-facebook"></i> Facebook</a></li>
+                  <li><a href="link" aria-label="Whatsapp"><i class="fa-brands fa-whatsapp"></i> Whatsapp</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="footer-bottom">
+              <p>&copy; 2025 IMADUNION. All rights reserved.</p>
+            </div>
+        `;
+
+        const navbarPlaceholder = document.getElementById('navbar-placeholder');
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+
+        if (navbarPlaceholder) {
+            navbarPlaceholder.innerHTML = navbarHTML;
+        }
+
+        if (footerPlaceholder) {
+            footerPlaceholder.innerHTML = footerHTML;
+        }
+        
+        const menuToggle = document.querySelector('.menu-toggle');
+        const rightSide = document.querySelector('.rightside');
+
+        if(menuToggle && rightSide) {
+            menuToggle.addEventListener('click', () => {
+                rightSide.classList.toggle('show');
+            });
+        }
+
+        // --- NEW FIREBASE LOGIC ---
+
+        const newsGridContainer = document.getElementById('newsGridContainer');
+
+        /**
+         * Fetches news from Firestore and calls displayNews
+         */
+        async function fetchNews() {
+            try {
+                const newsRef = collection(db, "news");
+                // Query to get all docs, ordered by 'createdAt' in descending order (newest first)
+                const q = query(newsRef, orderBy("createdAt", "desc"));
+                
+                const querySnapshot = await getDocs(q);
+                
+                // Map the results to a simple array of data objects
+                const newsPosts = querySnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    // Convert Firestore Timestamp to JS Date
+                    data.createdAt = data.createdAt ? data.createdAt.toDate() : new Date();
+                    return data;
+                });
+                
+                // Display the fetched news
+                displayNews(newsPosts);
+
+            } catch (error) {
+                console.error("Error fetching news:", error);
+                newsGridContainer.innerHTML = `<p style="text-align: center; color: red; grid-column: 1 / -1;">Error loading news. Please try again later.</p>`;
+            }
+        }
+
+        /**
+         * Renders an array of news posts into the grid
+         */
+        function displayNews(posts) {
+            newsGridContainer.innerHTML = ''; // Clear "Loading..."
+
+            if (posts.length === 0) {
+                newsGridContainer.innerHTML = `<p style="text-align: center; color: #888; grid-column: 1 / -1;">There are no news items to display yet.</p>`;
+                return;
+            }
+
+            posts.forEach(post => {
+                const formattedDate = post.createdAt.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                const newsCardHTML = `
+                    <div class="news-card">
+                        <div class="news-card-image">
+                            <img src="${post.imageUrl}" alt="News article image for ${post.title}" 
+                                 onerror="this.src='https://placehold.co/600x400/eee/ccc?text=Image+Error';">
+                        </div>
+                        <div class="news-card-content">
+                            <p class="news-date">${formattedDate}</p>
+                            <h3 class="news-title">${post.title}</h3>
+                            <p class="news-description">${post.description}</p>
+                            <!-- <a href="#" class="read-more-btn">Read More</a> -->
+                        </div>
+                    </div>
+                `;
+                newsGridContainer.insertAdjacentHTML('beforeend', newsCardHTML);
+            });
+        }
+
+        // Initial call to fetch news when the page loads
+        fetchNews();
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us - IMADUNION</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    /* =======================
+       Base Styles & Variables (Consistent with home.html)
+       ======================= */
+    :root {
+      --primary-color: #0c5079;
+      --secondary-color: #37a8df;
+      --light-gray: #f0f4f7; /* UPDATED from --light-bg */
+      --white: #ffffff;
+      --text-light: rgb(192, 180, 180);
+      --font-main: 'Poppins', sans-serif; /* UPDATED font */
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      --accent-color: #ff6633; /* Kept from original contact, adjust if needed */
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--light-gray); /* Use consistent BG */
+      color: #333; /* Consistent text color */
+      font-family: var(--font-main); /* Use consistent font */
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    /* =================================
+       Navbar Styles (Standardized)
+       ================================= */
+    .nav-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: var(--white); /* Adjusted background */
+    }
+
+    .navbar {
+        width: 100%;
+        /* max-width: 1328px; REMOVED - Added in media query */
+        height: 70px;
+        background-color: var(--primary-color);
+        border-radius: 35px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+        padding: 0 20px;
+        position: relative;
+    }
+
+    .logo-container {
+        width: 130px;
+    }
+
+    .logo-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .menu-toggle {
+        display: block;
+        font-size: 32px;
+        color: var(--white);
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .rightside {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        background: var(--primary-color);
+        position: absolute;
+        top: 78px;
+        right: 0;
+        width: 100%;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        padding: 20px 0;
+        gap: 0;
+        border-bottom-left-radius: 20px; /* Added */
+        border-bottom-right-radius: 20px; /* Added */
+    }
+
+    .rightside.show {
+        display: flex;
+    }
+
+    .rightside a {
+        text-decoration: none;
+        color: var(--white);
+        font-size: 18px;
+        font-weight: 500;
+        padding: 15px 0;
+        width: 100%;
+        text-align: center;
+        transition: color 0.3s ease, background-color 0.3s ease;
+    }
+    
+    .rightside a.active {
+        color: #000;
+        background-color: var(--white);
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .rightside a:hover:not(.active) {
+        background-color: var(--secondary-color);
+    }
+
+    /* =======================
+       Contact Section Styles (Kept Original Design)
+       ======================= */
+    .contact-container {
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 1rem; /* Adjusted padding for smaller screens */
+      text-align: center;
+    }
+
+    .contact-container h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .contact-container > p { /* Target direct child p only */
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 3rem;
+    }
+    
+    .info-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem; /* Slightly reduced gap */
+      margin-bottom: 3rem; /* Reduced margin */
+    }
+    
+    .info-card {
+      background-color: var(--white);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 1px solid #eee;
+      transition: transform 0.3s;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .icon-wrapper {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-color); /* Changed from orange */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .icon-wrapper i {
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .info-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.25rem;
+    }
+    
+    .info-card p {
+        margin: 0;
+        font-size: 1rem;
+        color: #777;
+    }
+
+    .contact-form {
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: var(--card-shadow);
+      text-align: left; /* Aligns form elements left */
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr; /* Default to 1 column */
+      gap: 1.5rem;
+    }
+    
+    .form-group {
+        width: 100%;
+    }
+    
+    .form-grid input,
+    .form-grid textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      outline: none;
+      font-size: 1rem;
+      font-family: var(--font-main); /* Ensure font consistency */
+      transition: border-color 0.3s;
+    }
+
+    .form-grid textarea {
+        height: 150px;
+        resize: none;
+    }
+
+    .form-grid input:focus,
+    .form-grid textarea:focus {
+      border-color: var(--primary-color); /* Changed from accent */
+    }
+    
+    .contact-form button {
+      background-color: var(--primary-color);
+      color: #fff;
+      font-weight: 600;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      font-family: var(--font-main); /* Consistent font */
+    }
+
+    .contact-form button:hover:not(:disabled) {
+      background-color: var(--secondary-color); /* Lighter hover */
+      transform: translateY(-2px);
+    }
+    
+    /* --- NEW: Disabled button state --- */
+    .contact-form button:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
+    
+    /* --- NEW: Status message style --- */
+    #status-message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    /* =================================
+       Footer Styles (Standardized)
+       ================================= */
+    .footer-container {
+        margin-top: 4rem; /* Added margin */
+        padding: 40px 20px;
+        background: var(--primary-color);
+        color: var(--white);
+    }
+    .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 30px;
+        max-width: 1200px; /* Added max-width */
+        margin: 0 auto; /* Center content */
+    }
+    .footer-section { min-width: 100%; }
+    .footer-logo { width: 150px; margin: 0 auto 20px; }
+    .footer-title { font-size: 20px; margin-bottom: 15px; font-weight: bold; }
+    .footer-text { font-size: 14px; line-height: 1.6; color: var(--text-light); }
+    .footer-links, .footer-social { list-style: none; padding: 0; }
+    .footer-links li, .footer-social li { margin: 10px 0; }
+    .footer-links a, .footer-social a { text-decoration: none; color: var(--text-light); transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+    .footer-links a:hover, .footer-social a:hover { color: var(--white); }
+    .footer-social i { font-size: 20px; width: 20px; text-align: center; }
+    .footer-social .fa-instagram { color: #E1306C; }
+    .footer-social .fa-facebook { color: #1877F2; }
+    .footer-social .fa-whatsapp { color: #25D366; }
+    .footer-bottom { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; opacity: 0.8; }
+
+
+    /* =======================
+       Responsive Media Queries
+       ======================= */
+    @media (min-width: 600px) {
+        /* Form grid for name/email */
+        .form-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        .form-grid > div:nth-child(3),
+        .form-grid > div:nth-child(4) {
+            grid-column: 1 / -1; /* Subject/Message span full */
+        }
+    }
+    
+    /* Using 768px as the standard breakpoint */
+    @media (min-width: 768px) {
+        /* --- Navbar Responsive --- */
+        .menu-toggle { display: none; }
+        .navbar { height: 78px; border-radius: 43px; max-width: 1200px; margin: 0 auto; }
+        .nav-container { padding: 15px; } /* Consistent padding */
+        .rightside { 
+            display: flex; 
+            position: static; 
+            flex-direction: row; 
+            width: auto; 
+            background: none; 
+            box-shadow: none; 
+            padding: 0; 
+            gap: 20px; 
+        }
+        .rightside a { padding: 8px 15px; border-radius: 20px; min-width: 130px; text-align: center; width: auto; } /* Added for consistent size */
+        .rightside a:hover:not(.active) { background: none; color: var(--secondary-color); }
+        .rightside a.active {
+            color: #000;
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* --- Footer Responsive --- */
+        .footer-container { padding: 60px 40px; }
+        .footer-content { flex-direction: row; flex-wrap: wrap; align-items: flex-start; text-align: left; gap: 30px; }
+        .footer-section { flex: 1; min-width: calc(50% - 20px); }
+        .footer-logo { margin: 0 0 20px; }
+    }
+
+    @media (min-width: 1024px) {
+        /* --- Navbar Responsive --- */
+        .rightside { gap: 32px; }
+
+        /* --- Footer Responsive --- */
+        .footer-section { min-width: 220px; }
+        .footer-content { flex-wrap: nowrap; }
+    }
+    @media (min-width: 1280px) {
+      /* Widen navbar and footer content on very large screens */
+        .navbar, .footer-content {
+            max-width: 1328px;
+        }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-placeholder" class="nav-container"></div>
+
+  <section class="contact-container">
+    <h1>Get in Touch</h1>
+    <p>Please use our web form to reach out to us for any inquiries or assistance.</p>
+    
+    <div class="info-cards-grid anim-element">
+        <div class="info-card">
+            <div class="icon-wrapper">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h3>Our Address</h3>
+            <p>SFADC, ODAMALA</p>
+        </div>
+        
+        <div class="info-card">
+            <div class="icon-wrapper">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <h3>Email Us</h3>
+            <p>imadodamala@gmail.com</p>
+        </div>
+        
+        <div class="info-card">
+            <div class="icon-wrapper">
+                <i class="fas fa-phone"></i>
+            </div>
+            <h3>Call Us</h3>
+            <p>+91 9207256313</p>
+        </div>
+    </div>
+
+    <div class="contact-form">
+      <form id="contactForm" class="form-grid">
+        <div class="form-group">
+            <input type="text" id="name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+            <input type="email" id="email" placeholder="Your Email" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="subject" placeholder="Subject" required>
+        </div>
+        <div class="form-group">
+            <textarea id="message" rows="5" placeholder="Message" required></textarea>
+        </div>
+        <button type="submit">Send Message</button>
+        <!-- --- NEW: Status message --- -->
+        <p id="status-message"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer id="footer-placeholder" class="footer-container"></footer>
+
+  <script type="module">
+    // --- Firebase SDK Imports ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"; // Added serverTimestamp
+
+    // --- MODIFIED: Firebase Config (Using the main 'achivement-upload' project) ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDEJa-CTRHH1dIdXkqlVz2kYzaVwDogA",
+        authDomain: "achivement-upload.firebaseapp.com",
+        projectId: "achivement-upload",
+        storageBucket: "achivement-upload.appspot.com",
+        messagingSenderId: "252939747632",
+        appId: "1:252939747632:web:607df0b9d6543ffc6a88f5",
+        measurementId: "G-SPVJ7VLTCH"
+    };
+
+    // --- Initialize Firebase ---
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // --- Run all scripts on DOM load ---
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- 1. Navbar and Footer Injection ---
+        // Navbar HTML with "Contact Us" set to active
+        const navbarHTML = `
+            <nav class="navbar">
+                <div class="left-side">
+                    <div class="logo-container">
+                        <img src="logo+.png" alt="IMADUNION Logo">
+                    </div>
+                </div>
+                <div class="menu-toggle">&#9776;</div>
+                <div class="rightside">
+                    <a class="home" href="home.html">Home</a>
+                    <a class="aboutus" href="about-us.html">About Us</a>
+                    <a class="news-events" href="news&event.html">News & Events</a>
+                  
+                    <a class="achievements" href="achievements.html">Achievements</a>
+                    <a class="contactus active" href="contact-us.html">Contact Us</a> 
+                </div>
+            </nav>
+        `;
+
+        // Standard Footer HTML
+        const footerHTML = `
+            <div class="footer-content">
+              <div class="footer-section">
+                <img src="logo+.png" alt="Footer Logo" class="footer-logo">
+                <p class="footer-text">
+                  Brief description of IMADUNION or a mission statement can go here.
+                </p>
+              </div>
+              <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                  <li><a href="home.html">Home</a></li>
+                  <li><a href="about-us.html">About Us</a></li>
+                  <li><a href="news&event.html">News & Events</a></li>
+                  <li><a href="publications.html">Publications</a></li>
+                  <li><a href="achievements.html">Achievements</a></li>
+                  <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+              </div>
+             <div class="footer-section">
+                <h4 class="footer-title">Our Social Media</h4>
+                <ul class="footer-social">
+                  <li><a href="https://www.instagram.com/imad_odamala?utm_source=ig_web_button_share_sheet&igsh=MTNleG5wNmIwanIzZQ==" aria-label="Instagram"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+                  <li><a href="link" aria-label="Facebook"><i class="fa-brands fa-facebook"></i> Facebook</a></li>
+                  <li><a href="link" aria-label="Whatsapp"><i class="fa-brands fa-whatsapp"></i> Whatsapp</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="footer-bottom">
+              <p>&copy; 2025 IMADUNION. All rights reserved.</p>
+            </div>
+        `;
+
+        const navbarPlaceholder = document.getElementById('navbar-placeholder');
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+
+        if (navbarPlaceholder) {
+            navbarPlaceholder.innerHTML = navbarHTML;
+        }
+
+        if (footerPlaceholder) {
+            footerPlaceholder.innerHTML = footerHTML;
+        }
+        
+        // --- 2. Mobile Menu Toggle Logic ---
+        const menuToggle = document.querySelector('.menu-toggle');
+        // Ensure querySelector uses the correct context AFTER injection
+        const rightSide = navbarPlaceholder ? navbarPlaceholder.querySelector('.rightside') : null; 
+
+        if(menuToggle && rightSide) {
+            menuToggle.addEventListener('click', () => {
+                rightSide.classList.toggle('show');
+            });
+        }
+
+        // --- 3. Contact Form Logic (MODIFIED for status message) ---
+        const contactForm = document.getElementById("contactForm");
+        const statusMessage = document.getElementById("status-message"); // Get status element
+        
+        if (contactForm) {
+            contactForm.addEventListener("submit", async (e) => {
+              e.preventDefault();
+              const name = document.getElementById("name").value.trim();
+              const email = document.getElementById("email").value.trim();
+              const subject = document.getElementById("subject").value.trim();
+              const message = document.getElementById("message").value.trim();
+              
+              // Basic validation
+              if (!name || !email || !subject || !message) {
+                  // MODIFIED: Use status message
+                  statusMessage.textContent = "Please fill in all fields.";
+                  statusMessage.style.color = "red";
+                  return; 
+              }
+
+              // Reference the button to disable/enable it
+              const submitButton = contactForm.querySelector('button[type="submit"]');
+              const originalButtonText = submitButton.textContent;
+              submitButton.disabled = true;
+              submitButton.textContent = "Sending...";
+              
+              // MODIFIED: Update status
+              statusMessage.textContent = "Sending message...";
+              statusMessage.style.color = "#333";
+
+              try {
+                // Use serverTimestamp() for accurate time
+                await addDoc(collection(db, "messages"), { 
+                    name, 
+                    email, 
+                    subject, 
+                    message, 
+                    timestamp: serverTimestamp() // Use server time
+                });
+                
+                // MODIFIED: Success message
+                statusMessage.textContent = "Message sent successfully! We'll be in touch.";
+                statusMessage.style.color = "green";
+                e.target.reset();
+
+              } catch (error) {
+                console.error("Error sending message:", error);
+                // MODIFIED: Error message
+                statusMessage.textContent = `Error: ${error.message}`;
+                statusMessage.style.color = "red";
+              } finally {
+                  // Re-enable the button regardless of success or failure
+                  submitButton.disabled = false;
+                  submitButton.textContent = originalButtonText;
+              }
+            });
+        }
+    });
+  </script>
+
+</body>
+</html>

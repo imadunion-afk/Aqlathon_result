@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMADUNION</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =================================
+           Global Styles & Variables
+           ================================= */
+        :root {
+          --primary-color: #0c5079;
+          --secondary-color: #37a8df;
+          --light-gray: #f0f4f7;
+          --white: #ffffff;
+          --text-light: rgb(192, 180, 180);
+          --font-main: 'Poppins', sans-serif;
+        }
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+          font-family: var(--font-main);
+          background-color: var(--white);
+          color: #333;
+        }
+
+        /* =================================
+           Preloader Intro Styles (Site-Wide)
+           ================================= */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.5s, visibility 0.8s 0.5s;
+        }
+        #preloader img {
+            width: 220px;
+            animation: scale-up 1s ease-out;
+            transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+        }
+        @keyframes scale-up {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        body.loaded #preloader {
+            transform: translateY(-100%);
+            visibility: hidden;
+        }
+        body.loaded #preloader img {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        .page-content-wrapper {
+            opacity: 0;
+            transform: translateY(-100px);
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.7s, transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.7s;
+        }
+        body.loaded .page-content-wrapper {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =================================
+           Load-in Animation Sequence
+           ================================= */
+        .load-in-item { opacity: 0; transform: translateY(-20px); }
+        body.loaded .load-in-item { animation: load-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes load-in {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body.loaded .load-in-nav { animation-delay: 0.8s; }
+        body.loaded .load-in-text-h3 { animation-delay: 1.0s; }
+        body.loaded .load-in-text-p { animation-delay: 1.2s; }
+        body.loaded .load-in-button { animation-delay: 1.4s; }
+
+        /* MODIFIED: Custom animation for hero image */
+        body.loaded .load-in-image-anim {
+            animation-name: load-in-image-kf; /* Override animation name */
+            animation-duration: 1.2s; /* Make it a bit longer */
+            animation-delay: 1.0s; /* Start it with the title */
+            transform: scale(1.15); /* Start zoomed in */
+        }
+        @keyframes load-in-image-kf {
+            from { 
+                opacity: 0; 
+                transform: scale(1.15) translateY(-10px);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1) translateY(0);
+            }
+        }
+
+
+        /* =================================
+           Animation on Scroll Styles (Site-Wide)
+           ================================= */
+        .animate-on-scroll { opacity: 0; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .fade-in-up { transform: translateY(30px); }
+        .fade-in-left { transform: translateX(-30px); }
+        .fade-in-right { transform: translateX(30px); }
+        
+        /* MODIFIED: Added transition-delay support */
+        .animate-on-scroll.is-visible { 
+            opacity: 1; 
+            transform: translate(0, 0);
+            transition-delay: var(--anim-delay, 0s);
+        }
+
+        /* =================================
+           NEW: Banner Section Styles
+           ================================= */
+        .banner-section {
+            width: 100%;
+            padding: 40px 20px; /* Spacing above/below */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--white);
+        }
+        .banner-container {
+            width: 100%;
+            max-width: 1200px; /* Matches other sections */
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .banner-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .banner-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* ==========================================================
+           SM - Small Screens / Mobile First (Default Styles)
+           ========================================================== */
+
+        /* --- Navigation: SM --- */
+        .nav-container { width: 100%; display: flex; justify-content: center; padding: 15px; position: sticky; top: 0; z-index: 1000; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); }
+        .navbar { 
+            width: 100%; 
+            /* max-width: 1198px; REMOVED */
+            height: 70px; 
+            background-color: var(--primary-color); 
+            border-radius: 35px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1); 
+            padding: 0 20px; 
+            position: relative; 
+        }
+        .logo-container { width: 130px; } .logo-container img { width: 100%; height: auto; display: block; transition: transform 0.3s ease; } .logo-container:hover img { transform: scale(1.05); }
+        .menu-toggle { display: block; font-size: 32px; color: var(--white); cursor: pointer; z-index: 1001; }
+        .rightside { display: none; flex-direction: column; align-items: center; background: var(--primary-color); position: absolute; top: 78px; right: 0; width: 100%; box-shadow: 0 8px 16px rgba(0,0,0,0.1); padding: 20px 0; gap: 0; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+        .rightside.show { display: flex; } .rightside a { text-decoration: none; color: var(--white); font-size: 18px; font-weight: 500; padding: 15px 0; width: 100%; text-align: center; transition: color 0.3s ease, background-color 0.3s ease; }
+        .rightside a.active { color: #000; background-color: var(--white); border-radius: 12px; font-weight: 600; } .rightside a:hover:not(.active) { background-color: var(--secondary-color); }
+
+        /* --- Hero Section: SM --- */
+        .page-one-container { padding: 30px 20px; flex-direction: column; text-align: center; display: flex; justify-content: center; align-items: center; gap: 30px; overflow-x: hidden; }
+        .leftside-first-page h3 { font-size: 28px; font-weight: 600; line-height: 1.3; color: var(--primary-color); }
+        .leftside-first-page p { margin: 20px 0 30px; font-size: 15px; line-height: 1.7; }
+        .leftside-first-page button { border: none; width: 180px; height: 50px; background-color: var(--primary-color); color: var(--white); border-radius: 20px; font-size: 20px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; }
+        .leftside-first-page button:hover { background-color: var(--secondary-color); transform: translateY(-3px); }
+        .img-college-container { overflow: hidden; border-radius: 20px; } 
+        
+        /* MODIFIED: Smoother transition for hover */
+        .img-college-container img { 
+            width: 100%; 
+            height: auto; 
+            border-radius: 20px; 
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        } 
+        /* MODIFIED: Enhanced hover */
+        .img-college-container:hover img { 
+            transform: scale(1.1); 
+        }
+
+        /* --- Section Two: SM --- */
+        .section { padding: 80px 20px; position: relative; background-color: #0c5079df; color: var(--white); text-align: center; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .section-content { max-width: 900px; margin: 0 auto; position: relative; z-index: 1;} 
+        
+        /* MODIFIED: Added background animation */
+        .section::before { 
+            content: ""; 
+            position: absolute; 
+            inset: 0; 
+            background-image: url("https://www.transparenttextures.com/patterns/arabesque.png"); 
+            opacity: 0.1; 
+            z-index: 0; 
+            animation: pan-background 60s linear infinite;
+        }
+        /* NEW: Keyframe for background pan */
+        @keyframes pan-background {
+            from { background-position: 0% 0%; }
+            to { background-position: 100% 100%; }
+        }
+
+        .section h3 { font-size: 22px; margin-bottom: 20px; } .section p { font-size: 18px; line-height: 1.6; }
+        .section button { margin-top: 30px; background: var(--white); color: var(--primary-color); border: none; padding: 12px 30px; border-radius: 30px; font-size: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .section button:hover { background: var(--light-gray); transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.25); }
+
+        /* --- News Grid: SM --- */
+        .page-three-container { padding: 60px 20px; overflow-x: hidden; }
+        .news { display: flex; flex-direction: column; gap: 20px; max-width: 500px; margin: 0 auto; }
+        .news > div { position: relative; border-radius: 28px; overflow: hidden; background-color: #000; height: 250px; }
+        
+        /* MODIFIED: Enhanced transitions */
+        .news img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 0.8; 
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s, filter 0.6s;
+        }
+        /* MODIFIED: Enhanced hover */
+        .news > div:hover img { 
+            transform: scale(1.1); 
+            opacity: 0.5; 
+            filter: saturate(1.2);
+        }
+        
+        .div1-hover, .div2-hover { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(12, 80, 121, 0.9), transparent); z-index: 2; color: var(--white); padding: 40px 20px 20px; transition: opacity 0.4s ease; display: flex; align-items: flex-end; opacity: 0; }
+        .div1-hover { top: 60%; } .div2-hover { top: 50%; } .news > div:hover .div1-hover, .news > div:hover .div2-hover { opacity: 1; }
+        .div1-hover p, .div2-hover p { width: 100%; color: var(--white); font-size: 15px; line-height: 1.4; }
+
+        /* --- NEW: Publication Section: SM --- */
+        .publication-section { padding: 60px 20px; background-color: var(--light-gray); overflow-x: hidden; }
+        .publication-container { display: flex; flex-direction: column; align-items: center; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        
+        /* MODIFIED: Added hover transitions */
+        .publication-image-wrapper { 
+            flex-basis: 300px; 
+            max-width: 300px; 
+            width: 100%; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            overflow: hidden; 
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s;
+        }
+        .publication-image-wrapper:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .publication-image-wrapper img { width: 100%; height: auto; /* Adjusted for cover aspect ratio */ object-fit: cover; display: block; background-color: #ccc; /* Placeholder */ }
+        .publication-content { flex: 1; text-align: center; }
+        .publication-content h2 { font-size: 28px; font-weight: 700; color: var(--primary-color); margin-bottom: 5px; }
+        .publication-content h3 { font-size: 18px; font-weight: 500; color: #555; margin-bottom: 20px; }
+        .publication-content p { font-size: 16px; line-height: 1.7; margin-bottom: 30px; }
+        .publication-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        
+        /* MODIFIED: Smoother transition */
+        .publication-buttons button, .publication-buttons a { 
+            border: none; 
+            min-width: 180px; 
+            height: 50px; 
+            border-radius: 20px; 
+            font-size: 16px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            padding: 0 25px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            text-decoration: none; 
+        }
+        
+        .publication-buttons .btn-primary { background-color: var(--primary-color); color: var(--white); }
+        .publication-buttons .btn-secondary { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); }
+        
+        /* MODIFIED: Enhanced hover */
+        .publication-buttons button:hover, .publication-buttons a:hover { 
+            background-color: var(--secondary-color); 
+            color: var(--white); 
+            border-color: var(--secondary-color); 
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* --- Footer: SM --- */
+        .footer-container { padding: 40px 20px; background: var(--primary-color); color: var(--white); }
+        .footer-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 30px; }
+        .footer-section { min-width: 100%; } .footer-logo { width: 150px; margin: 0 auto 20px; transition: transform 0.3s ease; } .footer-logo:hover { transform: scale(1.05); }
+        .footer-title { font-size: 20px; margin-bottom: 15px; font-weight: bold; } .footer-text { font-size: 14px; line-height: 1.6; color: var(--text-light); }
+        .footer-links, .footer-social { list-style: none; padding: 0; } .footer-links li, .footer-social li { margin: 10px 0; }
+        .footer-links a, .footer-social a { text-decoration: none; color: var(--text-light); transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+        .footer-links a:hover, .footer-social a:hover { color: var(--white); }
+        .footer-social i { font-size: 20px; width: 20px; text-align: center; } .footer-social .fa-instagram { color: #E1306C; } .footer-social .fa-facebook { color: #1877F2; } .footer-social .fa-whatsapp { color: #25D366; }
+        .footer-bottom { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; opacity: 0.8; }
+
+        /* ==========================================================
+           MD - Medium Screens (>= 768px, Tablets)
+           ========================================================== */
+        @media (min-width: 768px) {
+          /* --- Navigation: MD --- */
+          .menu-toggle { display: none; } 
+          .navbar { 
+              height: 78px; /* MODIFIED */
+              border-radius: 43px; /* MODIFIED */
+          }
+          .rightside { display: flex; position: static; flex-direction: row; width: auto; background: none; box-shadow: none; padding: 0; gap: 20px; }
+          .rightside a { 
+            padding: 8px 15px; 
+            border-radius: 20px; 
+            min-width: 130px; /* MODIFIED: Enforced min-width for consistent button size */ 
+            text-align: center; /* MODIFIED: Centered text for uniform look */
+            width: auto; 
+          } 
+          .rightside a:hover:not(.active) { background: none; color: var(--secondary-color); }
+          .rightside a.active { color: #000; background-color: var(--white); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+          /* --- Hero Section: MD --- */
+          .page-one-container { padding: 60px 40px; flex-direction: row; text-align: left; min-height: 60vh; }
+          .leftside-first-page { flex: 1; max-width: 650px; } .rightside-first-page { flex: 1; max-width: 500px; } .leftside-first-page h3 { font-size: 36px; }
+          /* --- News Grid: MD --- */
+          .page-three-container { padding: 80px 40px; } .news { display: grid; max-width: 100%; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 15vw); }
+          .div1 { grid-area: 1 / 1 / 3 / 5; } .div2 { grid-area: 3 / 1 / 5 / 3; } .div3 { grid-area: 3 / 3 / 5 / 5; } .div4, .div5 { display: none; }
+          /* --- Publication Section: MD --- */
+          .publication-section { padding: 80px 40px; } .publication-container { flex-direction: row; gap: 40px; } .publication-content { text-align: left; } .publication-buttons { justify-content: flex-start; }
+          /* --- Footer: MD --- */
+          .footer-container { padding: 60px 40px; } .footer-content { flex-direction: row; flex-wrap: wrap; align-items: flex-start; text-align: left; gap: 30px; }
+          .footer-section { flex: 1; min-width: calc(50% - 20px); } .footer-logo { margin: 0 0 20px; }
+        }
+
+        /* ==========================================================
+           LG - Large Screens (>= 1024px, Desktops)
+           ========================================================== */
+        @media (min-width: 1024px) {
+          /* --- Navigation: LG --- */
+          .rightside { gap: 32px; }
+          /* .navbar { max-width: 1198px; } REMOVED */
+          /* --- Hero Section: LG --- */
+          .page-one-container { padding: 40px 90px; min-height: 80vh; } .leftside-first-page h3 { font-size: 42px; }
+          /* --- News Grid: LG --- */
+          .news { max-width: 1200px; margin: 0 auto; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(7, 5vw); }
+          .div1 { grid-area: 1 / 1 / 5 / 5; } .div2 { grid-area: 1 / 5 / 5 / 7; } .div3 { grid-area: 5 / 1 / 8 / 3; } .div4 { display: block; grid-area: 5 / 3 / 8 / 5; } .div5 { display: block; grid-area: 5 / 5 / 8 / 7; }
+          /* --- Publication Section: LG --- */
+          .publication-section { padding: 100px 90px; } .publication-container { gap: 60px; }
+          .publication-image-wrapper { flex-basis: 350px; max-width: 350px; } .publication-content h2 { font-size: 36px; } .publication-content h3 { font-size: 20px; }
+          /* --- Footer: LG --- */
+          .footer-section { min-width: 220px; } .footer-content { flex-wrap: nowrap; }
+        }
+
+        /* ==========================================================
+           XL - Extra Large Screens (>= 1280px, Large Desktops)
+           ========================================================== */
+        @media (min-width: 1280px) {
+          /* --- Widen containers for a more spacious feel --- */
+          /* MODIFIED: Added .navbar to this rule */
+          .navbar, .page-one-container, .footer-content, .footer-bottom, .publication-container, .banner-container /* Added */ { max-width: 1328px; margin-left: auto; margin-right: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="preloader">
+    <img src="logo+.png" alt="IMADUNION Loading Logo">
+</div>
+
+<div class="page-content-wrapper">
+    <div id="navbar-placeholder" class="nav-container load-in-item load-in-nav">
+        </div>
+
+    <main>
+        <div class="page-one-container">
+            <div class="leftside-first-page">
+                <h3 class="load-in-item load-in-text-h3">Molded for Meaningful Change</h3>
+                <p class="load-in-item load-in-text-p">
+                  As the Students’ Union of Sheikh Fareed Auliya Dawa College, we are committed to guiding minds towards the core ideals of our institution and fostering a culture of positive change within our community.
+                </p>
+                <button class="load-in-item load-in-button" onclick="window.location.href='about-us.html'">View Us</button>
+            </div>
+            <div class="rightside-first-page">
+               <div class="img-college-container">
+                <img src="IMG_2879.png" alt="Picture of the college" class="load-in-item load-in-image-anim">
+               </div>
+            </div>
+        </div>
+
+        <section class="section">
+            <div class="section-content animate-on-scroll fade-in-up">
+              <h3>More than a Union</h3>
+              <p>
+                United in purpose, we strive to inspire transformation, cultivate enlightened minds, and remain deeply connected to the roots that shaped our journey.
+              </p>
+              <button onclick="window.location.href='achievements.html'">Explore Us</button>
+            </div>
+        </section>
+
+        <div class="page-three-container">
+         <div class="news">
+            <div class="div1 animate-on-scroll fade-in-up" style="--anim-delay: 0s;"> <img src="liora.JPG" alt="News event 1"> <div class="div1-hover"> <p>Liora Triumphs at Koutukam SFADC Art Fest 2025, Lifts Rolling Trophy</p> </div> </div>
+            <div class="div2 animate-on-scroll fade-in-up" style="--anim-delay: 0.15s;"> <img src="mission100.jpg" alt="News event 2"> <div class="div1-hover"> <p>Mission 100+ is a journey of words and wisdom — a platform to enrich students’ academic and creative potential...</p> </div> </div>
+            <div class="div3 animate-on-scroll fade-in-up" style="--anim-delay: 0s;"> <img src="SKSSF1.jpg" alt="News event 3"> <div class="div2-hover"> <p>فلِيبلِغ | A Da’wa Project “واجعلنا للمتقين إماما...” فلِيبلِغ is a unique Da’wa initiative...</p> </div> </div>
+            <div class="div4 animate-on-scroll fade-in-up" style="--anim-delay: 0.15s;"> <img src="LOLI (2).jpeg" alt="News event 4"> <div class="div2-hover"> <p>"May new buds of thought blossom..." A one-day camp organized by the SFADC Odamala Students’ Union...</p> </div> </div>
+            <div class="div5 animate-on-scroll fade-in-up" style="--anim-delay: 0.3s;"> <img src="ASLU.jpeg" alt="News event 5"> <div class="div2-hover"> <p>The “Aslamthu – Proud Muslim Competition” was organized under the auspices of the Sheikh Fareed Auliya Da’wa College Students’ Union...</p> </div> </div>
+         </div>
+        </div>
+
+        <!-- <section class="publication-section">
+            <div class="publication-container" id="featured-magazine-container">
+                <p style="text-align: center; color: #666;">Loading latest magazine...</p>
+            </div>
+        </section> --->
+
+    </main>
+    
+    <!-- NEW BANNER SECTION START -->
+    <div class="banner-section animate-on-scroll fade-in-up">
+        <div class="banner-container">
+            <a href="https://shamilamanav.github.io/aqlathon_result/">
+            <img src="Aqla.jpg" alt="Sibaq 2025 Banner">
+            </a>
+        </div>
+    </div>
+    <!-- NEW BANNER SECTION END -->
+
+    <footer id="footer-placeholder" class="footer-container">
+        </footer>
+</div>
+
+<script type="module">
+    // --- Firebase SDK Imports ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    // ADDED: Import Auth functions
+    import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+
+    // --- Firebase Config ---
+    // Use the environment provided config if available, otherwise fall back to the hardcoded one
+    let firebaseConfig;
+    if (typeof __firebase_config !== 'undefined') {
+        firebaseConfig = JSON.parse(__firebase_config);
+    } else {
+        firebaseConfig = {
+            apiKey: "AIzaSyDEJa-CTRHH1dIdXkqlVz2kYzaVwDogA",
+            authDomain: "achivement-upload.firebaseapp.com",
+            projectId: "achivement-upload",
+            storageBucket: "achivement-upload.appspot.com",
+            messagingSenderId: "252939747632",
+            appId: "1:252939747632:web:607df0b9d6543ffc6a88f5",
+            measurementId: "G-SPVJ7VLTCH"
+        };
+    }
+
+    // --- Initialize Firebase ---
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app); // ADDED: Initialize Auth
+    const db = getFirestore(app);
+
+    // --- Run scripts on DOM load ---
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- 1. Preloader ---
+        setTimeout(function() {
+            document.body.classList.add('loaded');
+        }, 1000); 
+
+        // --- 2. Navbar and Footer Injection ---
+        const navbarHTML = `
+            <nav class="navbar">
+                <div class="left-side">
+                    <div class="logo-container">
+                        <img src="logo+.png" alt="IMADUNION Logo">
+                    </div>
+                </div>
+                <div class="menu-toggle">&#9776;</div>
+                <div class="rightside">
+                    <a class="home active" href="home.html">Home</a>
+                    <a class="aboutus" href="about-us.html">About Us</a>
+                    <a class="news-events" href="news&event.html">News & Events</a>
+                    
+                    <a class="achievements" href="achievements.html">Achievements</a>
+                    <a class="contactus" href="contact-us.html">Contact Us</a>
+                </div>
+            </nav>
+        `;
+
+        // MODIFIED: Added animation classes and inline delays to footer sections
+        const footerHTML = `
+            <div class="footer-content">
+              <div class="footer-section animate-on-scroll fade-in-up" style="--anim-delay: 0s;">
+                <img src="logo+.png" alt="Footer Logo" class="footer-logo">
+                <p class="footer-text">
+                  IMAD Students’ Union serves as a dynamic platform promoting learning, leadership, and social responsibility among students. It empowers individuals to grow with purpose, uphold values, and contribute meaningfully to society.
+                </pre>
+              </div>
+              <div class="footer-section animate-on-scroll fade-in-up" style="--anim-delay: 0.15s;">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                  <li><a href="home.html">Home</a></li>
+                  <li><a href="about-us.html">About Us</a></li>
+                  <li><a href="news&event.html">News & Events</a></li>
+                  <li><a href="publications.html">Publications</a></li>
+                  <li><a href="achievements.html">Achievements</a></li>
+                  <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+              </div>
+             <div class="footer-section animate-on-scroll fade-in-up" style="--anim-delay: 0.3s;">
+                <h4 class="footer-title">Our Social Media</h4>
+                <ul class="footer-social">
+                  <li><a href="https://www.instagram.com/imad_odamala?utm_source=ig_web_button_share_sheet&igsh=MTNleG5wNmIwanIzZQ==" aria-label="Instagram"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+                  <li><a href="https://www.facebook.com/share/1Jbv1HWPY9/?mibextid=wwXIfr" aria-label="Facebook"><i class="fa-brands fa-facebook"></i> Facebook</a></li>
+                  <li><a href="link" aria-label="Whatsapp"><i class="fa-brands fa-whatsapp"></i> Whatsapp</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="footer-bottom">
+              <p>&copy; 2025 IMADUNION. All rights reserved.</p>
+            </div>
+        `;
+
+        const navbarPlaceholder = document.getElementById('navbar-placeholder');
+        const footerPlaceholder = document.getElementById('footer-placeholder');
+
+        if (navbarPlaceholder) navbarPlaceholder.innerHTML = navbarHTML;
+        if (footerPlaceholder) footerPlaceholder.innerHTML = footerHTML;
+        
+        // --- 3. Mobile Menu Toggle ---
+        const menuToggle = document.querySelector('.menu-toggle');
+        // Re-query rightSide AFTER navbar injection
+        const rightSide = navbarPlaceholder ? navbarPlaceholder.querySelector('.rightside') : null; 
+        if (menuToggle && rightSide) {
+            menuToggle.addEventListener('click', () => {
+                rightSide.classList.toggle('show');
+            });
+        }
+
+        // --- 4. Animation on Scroll ---
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
+        if ("IntersectionObserver" in window) {
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            animatedElements.forEach(el => observer.observe(el));
+        } else {
+            animatedElements.forEach(el => el.classList.add('is-visible'));
+        }
+
+        // --- 5. NEW: Fetch and Display Featured Magazine ---
+        const magazineContainer = document.getElementById('featured-magazine-container');
+        
+        // This is a placeholder for the appId. If running in the canvas environment, __app_id is defined.
+        // If not, it falls back to 'default-app-id', which is correct for your standalone setup.
+        
+        // --- FIX for App ID with slashes ---
+        // The __app_id might contain a '/' which breaks Firestore paths.
+        // We replace any '/' with '__' to create a single valid path segment.
+        const rawAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const effectiveAppId = rawAppId.replace(/\//g, '__');
+        // --- END FIX ---
+
+
+        async function fetchLatestMagazine() {
+            try {
+                // --- THIS IS THE FIX ---
+                // Changed from `${effectiveAppId}/public/data/magazines`
+                // to match the path in magazineupload.html and your firestore.rules
+                const magazineCollectionPath = `artifacts/${effectiveAppId}/public/data/magazines`;
+                // --- END OF FIX ---
+                
+                console.log(`Fetching from: ${magazineCollectionPath}`); // Debug log
+                
+                const magazinesRef = collection(db, magazineCollectionPath);
+                
+                // Query to get only the latest document based on createdAt timestamp
+                const q = query(magazinesRef, orderBy("createdAt", "desc"), limit(1));
+                
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    console.log("No magazines found in collection."); // Debug log
+                    magazineContainer.innerHTML = '<p style="text-align: center; color: #666;">No magazines published yet.</p>';
+                    return;
+                }
+
+                // Get the data from the single document found
+                const latestMagazine = querySnapshot.docs[0].data();
+                console.log("Found magazine:", latestMagazine); // Debug log
+                displayFeaturedMagazine(latestMagazine);
+
+            } catch (error) {
+                // Check for the known Firebase error pattern to log a clean message
+                if (error.code && (error.code === 'invalid-argument' || error.code === 'permission-denied' || error.code === 'unimplemented')) {
+                    console.error(`Firebase Error: ${error.message}. Check collection path and Firestore rules.`);
+                } else {
+                    console.error("Error fetching latest magazine:", error);
+                }
+                magazineContainer.innerHTML = '<p style="text-align: center; color: red;">Error loading magazine details.</p>';
+            }
+        }
+
+        //
+        // --- THIS IS THE UPDATED FUNCTION (v3) ---
+        //
+        function displayFeaturedMagazine(magazine) {
+            // Use placeholder if cover image URL is missing
+            const coverImageUrl = magazine.coverImageUrl || 'https://placehold.co/400x550/0c5079/ffffff?text=Cover+Image';
+            
+            // --- CHANGE: Reverted to simple link behavior ---
+            // This now matches the strategy from publications.html (opens in new tab)
+            const downloadUrl = magazine.pdfUrl || '#';
+            // --- CHANGE END ---
+            
+            const magazineHTML = `
+                <div class="publication-image-wrapper animate-on-scroll fade-in-left">
+                    <img src="${coverImageUrl}" alt="Cover of ${magazine.title}">
+                </div>
+
+                <div class="publication-content animate-on-scroll fade-in-right">
+                    <h2>Our Latest Issue</h2>
+                    <h3>${magazine.title || 'Untitled Magazine'}</h3>
+                    <p>
+                        ${magazine.description || 'Check out our latest publication.'}
+                    </p>
+                    <div class="publication-buttons">
+                        <a href="publications.html" class="btn-primary">
+                            <i class="fa-solid fa-book-open"></i> View All
+                        </a>
+                        
+                        <a href="${downloadUrl}" class="btn-secondary" target="_blank" rel="noopener noreferrer" ${!magazine.pdfUrl ? 'style="display:none;"' : ''}>
+                            <i class="fa-solid fa-download"></i> Download PDF
+                        </a>
+                    </div>
+                </div>
+            `;
+            magazineContainer.innerHTML = magazineHTML;
+
+            // Re-run animation observer for newly added elements
+            const newAnimatedElements = magazineContainer.querySelectorAll('.animate-on-scroll');
+            if ("IntersectionObserver" in window) {
+                const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+                const observer = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+                newAnimatedElements.forEach(el => observer.observe(el));
+            } else {
+                 newAnimatedElements.forEach(el => el.classList.add('is-visible'));
+            }
+        }
+        
+        // --- 6. Authentication & Data Fetching (FIXED) ---
+        const initAuth = async () => {
+            try {
+                // Check if we have a custom token from the environment
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } catch (e) {
+                        console.warn("Custom token failed (likely config mismatch), falling back to anonymous.");
+                        await signInAnonymously(auth);
+                    }
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth error:", error);
+            }
+        };
+
+        // Wait for successful auth before fetching data
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User authenticated:", user.uid);
+                fetchLatestMagazine();
+            }
+        });
+
+        // Start the auth process
+        initAuth();
+    });
+</script>
+
+</body>
+</html>

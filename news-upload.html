@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: Upload News - IMADUNION</title>
+    
+    <!-- CSS is embedded directly in the head for a single-file solution -->
+    <style>
+        /* Basic Style Variables */
+        :root {
+          --primary-color: #0c5079;
+          --secondary-color: #37a8df;
+          --light-gray: #f0f4f7;
+          --white: #ffffff;
+          --danger-color: #e74c3c;
+        }
+
+        /* General Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Main Container */
+        .upload-container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box; /* Added for consistency */
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(12, 80, 121, 0.1);
+        }
+
+        .form-group input[type="file"] {
+            font-size: 15px;
+            width: 100%;
+        }
+        
+        /* Button Styles */
+        .submit-btn, .view-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box; /* Added for consistency */
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        .submit-btn:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+        
+        .view-btn {
+            background-color: #27ae60;
+            margin-top: 15px;
+        }
+
+        /* Status Message */
+        #status-message {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="upload-container">
+        <h1>Admin News Upload</h1>
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="newsTitle">News Title</label>
+                <input type="text" id="newsTitle" placeholder="e.g., Annual General Body Meeting" required>
+            </div>
+            <div class="form-group">
+                <label for="newsDescription">Description</label>
+                <textarea id="newsDescription" rows="5" placeholder="Enter a brief summary of the news..." required></textarea>
+            </div>
+            <div class="form-group">
+                <!-- Fixed the "P" label -->
+                <label for="newsImage">News Image</label>
+                <input type="file" id="newsImage" accept="image/*" required>
+            </div>
+            <!-- Added id="submit-btn" -->
+            <button type="submit" class="submit-btn" id="submit-btn">Add Post to News Page</button>
+        </form>
+
+        <!-- Added status message placeholder -->
+        <p id="status-message"></p>
+
+        <!-- Points to the correct news & event page -->
+        <a href="news&event.html" target="_blank" class="view-btn">View News & Events Page</a>
+        <!-- The "Clear All" button was removed as this is dangerous and not simple to implement with Firebase -->
+    </main>
+
+    <!-- 
+      SCRIPT SECTION RE-WRITTEN 
+      - Changed to type="module"
+      - Added Firebase and Cloudinary logic
+      - Removed localStorage logic
+    -->
+    <script type="module">
+        // --- Firebase SDK Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // --- 1. Firebase Config (from your achievement uploader) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEJa-CTRHH1dIdXkqlVz2kYzaVwDogA",
+            authDomain: "achivement-upload.firebaseapp.com",
+            projectId: "achivement-upload",
+            storageBucket: "achivement-upload.appspot.com",
+            messagingSenderId: "252939747632",
+            appId: "1:252939747632:web:607df0b9d6543ffc6a88f5",
+            measurementId: "G-SPVJ7VLTCH"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- 2. Cloudinary Config (from your achievement uploader) ---
+        const CLOUDINARY_CLOUD_NAME = "dchwv07vqr";
+        const CLOUDINARY_API_KEY = "913777682857524";
+        const CLOUDINARY_UPLOAD_PRESET = "imadunion_upload"; 
+        const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+        // --- 3. Get Form Elements ---
+        const uploadForm = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submit-btn');
+        const statusMessage = document.getElementById('status-message');
+
+        // --- 4. Handle Form Submission ---
+        uploadForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the form from reloading the page
+
+            const title = document.getElementById('newsTitle').value;
+            const description = document.getElementById('newsDescription').value;
+            const imageFile = document.getElementById('newsImage').files[0];
+            
+            if (!title || !description || !imageFile) {
+                statusMessage.textContent = 'Please fill out all fields and select an image.';
+                statusMessage.style.color = 'red';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+            statusMessage.textContent = 'Uploading image to Cloudinary...';
+            statusMessage.style.color = '#333';
+
+            try {
+                // --- 5. Upload to Cloudinary ---
+                const formData = new FormData();
+                formData.append('file', imageFile);
+                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+                formData.append('api_key', CLOUDINARY_API_KEY);
+
+                const cloudinaryResponse = await fetch(CLOUDINARY_API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!cloudinaryResponse.ok) {
+                    const err = await cloudinaryResponse.json();
+                    throw new Error(`Cloudinary Error: ${err.error.message}`);
+                }
+
+                const cloudinaryData = await cloudinaryResponse.json();
+                const imageUrl = cloudinaryData.secure_url; // The URL to save
+
+                statusMessage.textContent = 'Image uploaded. Saving post to Firebase...';
+
+                // --- 6. Save to Firebase Firestore (in a new "news" collection) ---
+                await addDoc(collection(db, "news"), {
+                    title: title,
+                    description: description,
+                    imageUrl: imageUrl, // Save the Cloudinary URL
+                    createdAt: serverTimestamp() // For sorting
+                });
+
+                // --- 7. Success ---
+                statusMessage.textContent = 'News post uploaded successfully!';
+                statusMessage.style.color = 'green';
+                uploadForm.reset();
+
+            } catch (error) {
+                console.error("Upload Error:", error);
+                statusMessage.textContent = `Error: ${error.message}`;
+                statusMessage.style.color = 'red';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Post to News Page';
+            }
+        });
+    </script>
+</body>
+</html>

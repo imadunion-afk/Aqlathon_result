@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications - IMADUNION</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =================================
+           Global Styles & Variables (from project)
+           ================================= */
+        :root {
+          --primary-color: #0c5079;
+          --secondary-color: #37a8df;
+          --light-gray: #f0f4f7;
+          --white: #ffffff;
+          --text-light: rgb(192, 180, 180);
+          --font-main: 'Poppins', sans-serif;
+        }
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: var(--font-main);
+          background-color: var(--light-gray); /* Use light gray for the page BG */
+          color: #333;
+        }
+
+        /* =================================
+           Page-Specific Styles
+           ================================= */
+
+        /* Grid Container (like news&event.html) */
+        .publications-grid-container {
+            padding: 20px; /* Reduced padding */
+            margin-top: 20px; /* Added space from top */
+        }
+
+        .publications-grid {
+            display: grid;
+            /* Responsive grid: 1 column on mobile, adapting up to 3 on desktop */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Loading/Error Message Style */
+        .grid-status {
+            text-align: center;
+            color: #888;
+            grid-column: 1 / -1; /* Span all columns */
+            font-size: 1.1rem;
+            padding: 40px 0;
+        }
+
+        /* Magazine Card Style (based on news-card) */
+        .magazine-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .magazine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .magazine-card-image img {
+            width: 100%;
+            height: 400px; /* Fixed height for magazine covers */
+            object-fit: cover; /* This will cover the area, might crop */
+            object-position: top; /* Prioritize the top of the cover */
+            display: block;
+            background-color: #eee; /* Placeholder bg */
+        }
+
+        .magazine-card-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Allows button to be pushed to the bottom */
+        }
+
+        .magazine-date {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .magazine-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .magazine-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+            flex-grow: 1; /* Pushes button down */
+            margin-bottom: 20px;
+        }
+        
+        .magazine-actions {
+            margin-top: auto; /* Pushes this to the bottom */
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .download-btn i {
+            font-size: 14px;
+        }
+
+
+        /* =================================
+           Responsive Media Queries
+           ================================= */
+        @media (min-width: 768px) {
+            /* --- Page Responsive --- */
+            .publications-grid-container { 
+                padding: 40px; 
+                margin-top: 40px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            /* --- Page Responsive --- */
+            .publications-grid-container { padding: 60px 80px; }
+        }
+         @media (min-width: 1280px) {
+            .publications-grid {
+                max-width: 1328px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- =======================
+     Publications Grid Section
+     ======================= -->
+<main class="publications-grid-container">
+    <div class="publications-grid" id="publicationsGridContainer">
+        <!-- Publications will be injected here by JavaScript -->
+        <p classclass="grid-status">Loading publications...</p>
+    </div>
+</main>
+
+<script type="module">
+    // --- Firebase SDK Imports ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, setLogLevel } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // --- Firebase Config (from magazineupload.html) ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDEJa-CTRHH1dIdXkqlVz2kYzaVwDogA",
+        authDomain: "achivement-upload.firebaseapp.com",
+        projectId: "achivement-upload",
+        storageBucket: "achivement-upload.appspot.com",
+        messagingSenderId: "252939747632",
+        appId: "1:252939747632:web:607df0b9d6543ffc6a88f5",
+        measurementId: "G-SPVJ7VLTCH"
+    };
+
+    // --- Initialize Firebase ---
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    // setLogLevel('debug'); // Uncomment for detailed logs
+
+    // --- Environment App ID (from magazineupload.html) ---
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- Fetch and Display Publications ---
+        const gridContainer = document.getElementById('publicationsGridContainer');
+
+        async function fetchPublications() {
+            try {
+                // This path MUST match the one in magazineupload.html
+                const pubCollectionPath = `artifacts/${appId}/public/data/magazines`;
+                console.log(`Fetching from: ${pubCollectionPath}`); // Debug log
+                
+                const pubRef = collection(db, pubCollectionPath);
+                // Query to get all docs, ordered by 'createdAt' in descending order (newest first)
+                const q = query(pubRef, orderBy("createdAt", "desc"));
+                
+                const querySnapshot = await getDocs(q);
+                
+                const publications = querySnapshot.docs.map(doc => doc.data());
+                
+                displayPublications(publications);
+
+            } catch (error) {
+                console.error("Error fetching publications:", error);
+                gridContainer.innerHTML = `<p class="grid-status" style="color: red;">Error loading publications. Please try again later.</p>`;
+            }
+        }
+
+        /**
+         * Renders an array of publication objects into the grid
+         */
+        function displayPublications(pubs) {
+            gridContainer.innerHTML = ''; // Clear "Loading..."
+
+            if (pubs.length === 0) {
+                gridContainer.innerHTML = `<p class="grid-status">There are no publications to display yet.</p>`;
+                return;
+            }
+
+            pubs.forEach(pub => {
+                const title = pub.title || 'Untitled';
+                const description = pub.description || 'No description available.';
+                const imageUrl = pub.coverImageUrl || 'https://placehold.co/300x400/0c5079/ffffff?text=No+Cover';
+                
+                // Format the date
+                const date = pub.createdAt ? pub.createdAt.toDate() : new Date();
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                // Create a forced-download URL for Cloudinary (from home.html)
+                let downloadUrl = pub.pdfUrl || '#';
+                if (downloadUrl.includes('res.cloudinary.com')) {
+                    if (downloadUrl.includes('?')) {
+                        downloadUrl += '&fl_download=true';
+                    } else {
+                        downloadUrl += '?fl_download=true';
+                    }
+                }
+
+                const cardHTML = `
+                    <div class="magazine-card">
+                        <div class="magazine-card-image">
+                            <img src="${imageUrl}" alt="Cover of ${title}" onerror="this.src='https://placehold.co/300x400/eee/ccc?text=Image+Error';">
+                        </div>
+                        <div class="magazine-card-content">
+                            <p class="magazine-date">${formattedDate}</p>
+                            <h3 class="magazine-title">${title}</h3>
+                            <p class="magazine-description">${description}</p>
+                            <div class="magazine-actions">
+                                <a href="${downloadUrl}" class="download-btn" target="_blank" ${!pub.pdfUrl ? 'style="display:none;"' : ''}>
+                                    <i class="fa-solid fa-download"></i> Download PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                gridContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        // Initial call to fetch data when the page loads
+        fetchPublications();
+    });
+</script>
+
+</body>
+</html>
+

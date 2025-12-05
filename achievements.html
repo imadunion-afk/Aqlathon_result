@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements - IMADUNION</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #0c5079; --secondary-color: #37a8df; --light-gray: #f4f6f9; --white: #ffffff; --text-light: rgb(192, 180, 180); --font-main: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-main); background-color: var(--light-gray); color: #333; }
+        .nav-container { width: 100%; display: flex; justify-content: center; padding: 15px; position: sticky; top: 0; z-index: 1000; background-color: var(--light-gray); }
+        .navbar { width: 100%; max-width: 1328px; height: 70px; background-color: var(--primary-color); border-radius: 35px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 18px rgba(0,0,0,0.1); padding: 0 20px; position: relative; }
+        .logo-container { width: 130px; } .logo-container img { width: 100%; height: auto; display: block; }
+        .menu-toggle { display: block; font-size: 32px; color: var(--white); cursor: pointer; z-index: 1001; }
+        .rightside { display: none; flex-direction: column; align-items: center; background: var(--primary-color); position: absolute; top: 78px; right: 0; width: 100%; box-shadow: 0 8px 16px rgba(0,0,0,0.1); padding: 20px 0; gap: 0; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+        .rightside.show { display: flex; } 
+        .rightside a { text-decoration: none; color: var(--white); font-size: 18px; font-weight: 500; padding: 15px 0; width: 100%; text-align: center; transition: color 0.3s ease, background-color 0.3s ease; }
+        
+        /* New Active State CSS for mobile */
+        .rightside a.active { 
+            color: #000; /* Black text color */
+            background-color: var(--white); /* White background for contrast */
+            border-radius: 12px; /* Slight rounding for the mobile item */
+            font-weight: 600; 
+        } 
+        
+        .rightside a:hover:not(.active) { background-color: var(--secondary-color); color: var(--white); }
+        
+        .achievements-hero { padding: 80px 20px; text-align: center; background-color: var(--white); }
+        .achievements-hero h1 { font-size: 36px; font-weight: 600; color: var(--primary-color); margin-bottom: 10px; }
+        .achievements-hero p { font-size: 16px; color: #666; max-width: 700px; margin: 0 auto; }
+        .achievements-gallery { padding: 60px 20px; } .filter-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+        .filter-btn { background-color: var(--white); color: var(--primary-color); border: 1px solid #ddd; padding: 10px 25px; border-radius: 20px; font-family: var(--font-main); font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; }
+        .filter-btn:hover { background-color: #e9ecef; border-color: #ccc; } .filter-btn.active { background-color: var(--primary-color); color: var(--white); border-color: var(--primary-color); }
+        .achievements-grid { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .achievement-card { background-color: var(--white); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: hidden; text-decoration: none; color: #333; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .achievement-card:hover { transform: translateY(-8px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        .card-image { width: 100%; height: 240px; object-fit: cover; display: block; background-color: #eee; }
+        .card-content { padding: 20px; }
+        .card-category { font-size: 13px; font-weight: 500; color: var(--secondary-color); margin-bottom: 8px; text-transform: uppercase; }
+        .card-title { font-size: 20px; font-weight: 600; color: var(--primary-color); margin-bottom: 8px; }
+        .card-date { font-size: 14px; color: #888; }
+        .load-more-container { text-align: center; margin-top: 50px; }
+        .load-more-btn { background-color: var(--primary-color); color: var(--white); border: none; padding: 14px 40px; border-radius: 25px; font-family: var(--font-main); font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; }
+        .load-more-btn:hover { background-color: var(--secondary-color); transform: translateY(-3px); }
+        .footer-container { padding: 40px 20px; background: var(--primary-color); color: var(--white); }
+        .footer-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .footer-section { min-width: 100%; } .footer-logo { width: 150px; margin: 0 auto 20px; }
+        .footer-title { font-size: 20px; margin-bottom: 15px; font-weight: bold; } .footer-text { font-size: 14px; line-height: 1.6; color: var(--text-light); }
+        .footer-links, .footer-social { list-style: none; padding: 0; } .footer-links li, .footer-social li { margin: 10px 0; }
+        .footer-links a, .footer-social a { text-decoration: none; color: var(--text-light); transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+        .footer-links a:hover, .footer-social a:hover { color: var(--white); }
+        .footer-social i { font-size: 20px; width: 20px; text-align: center; } .footer-social .fa-instagram { color: #E1306C; } .footer-social .fa-facebook { color: #1877F2; } .footer-social .fa-whatsapp { color: #25D366; }
+        .footer-bottom { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; opacity: 0.8; }
+        @media (min-width: 768px) { 
+            .navbar { height: 78px; border-radius: 43px; } 
+            .menu-toggle { display: none; } 
+            .rightside { display: flex; position: static; flex-direction: row; width: auto; background: none; box-shadow: none; padding: 0; gap: 20px; } 
+            .rightside a { padding: 8px 15px; border-radius: 20px; min-width: 130px; text-align: center; width: auto; } /* Added for consistent size */
+            .rightside a:hover:not(.active) { background: none; color: var(--secondary-color); } 
+            
+            /* Desktop Active State Specifics */
+            .rightside a.active {
+                color: #000;
+                background-color: var(--white);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+            
+            .achievements-hero { padding: 100px 40px; } .achievements-hero h1 { font-size: 42px; } .achievements-gallery { padding: 80px 40px; } .achievements-grid { grid-template-columns: repeat(2, 1fr); } .footer-container { padding: 60px 40px; } .footer-content { flex-direction: row; flex-wrap: wrap; align-items: flex-start; text-align: left; gap: 30px; } .footer-section { flex: 1; min-width: calc(50% - 20px); } .footer-logo { margin: 0 0 20px; } }
+        @media (min-width: 1024px) { .rightside { gap: 32px; } .achievements-gallery { padding: 100px 80px; } .achievements-grid { grid-template-columns: repeat(3, 1fr); } .footer-section { min-width: 220px; } .footer-content { flex-wrap: nowrap; } }
+    </style>
+</head>
+<body>
+   <div id="navbar-placeholder" class="nav-container"></div>
+    <main>
+        <section class="achievements-hero">
+            <h1>Our Achievements</h1>
+            <p>Celebrating the milestones and successes of our talented students and faculty.</p>
+        </section>
+        <section class="achievements-gallery">
+            <div class="filter-bar">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="academics">Academics</button>
+                <button class="filter-btn" data-category="sports">Sports</button>
+                <button class="filter-btn" data-category="arts">Arts & Culture</button>
+            </div>
+            <!-- Achievements will be loaded here -->
+            <div class="achievements-grid" id="achievements-grid">
+                <!-- Example of a loading state -->
+                <p style="text-align: center; color: #666; grid-column: 1 / -1;">Loading achievements...</p>
+            </div>
+            
+            <!-- We can hide/show this button if we add pagination later -->
+            <!-- <div class="load-more-container"><button class="load-more-btn">Load More</button></div> -->
+        </section>
+    </main>
+
+    <footer id="footer-placeholder" class="footer-container"></footer>
+
+    <!--
+      NEW SCRIPT SECTION
+      - Removed Appwrite SDK
+      - Added Firebase SDKs
+      - Rewrote JavaScript to use Firebase
+    -->
+    <script type="module">
+        // --- Firebase SDK Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // --- Firebase Config (from your upload.html) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEJa-CTRHH1dIdXkqlVz2kYzaVwDogA",
+            authDomain: "achivement-upload.firebaseapp.com",
+            projectId: "achivement-upload",
+            storageBucket: "achivement-upload.appspot.com",
+            messagingSenderId: "252939747632",
+            appId: "1:252939747632:web:607df0b9d6543ffc6a88f5",
+            measurementId: "G-SPVJ7VLTCH"
+        };
+
+        // --- Initialize Firebase ---
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- Navbar & Footer Injection (Same as your other pages) ---
+        document.addEventListener("DOMContentLoaded", function() {
+            // Updated navbar HTML with active class on "Achievements"
+            const navbarHTML = `
+                <nav class="navbar">
+                    <div class="left-side">
+                        <div class="logo-container">
+                            <img src="logo+.png" alt="IMADUNION Logo">
+                        </div>
+                    </div>
+                    <div class="menu-toggle">&#9776;</div>
+                    <div class="rightside">
+                        <a class="home" href="home.html">Home</a>
+                        <a class="aboutus" href="about-us.html">About Us</a>
+                        <a class="news-events" href="news&event.html">News & Events</a>
+                        <a class="achievements active" href="achievements.html">Achievements</a>
+                        <a class="contactus" href="contact-us.html">Contact Us</a>
+                    </div>
+                </nav>
+            `;
+
+            const footerHTML = `
+                <div class="footer-content">
+                  <div class="footer-section">
+                    <img src="logo+.png" alt="Footer Logo" class="footer-logo">
+                    <p class="footer-text">
+                      Brief description of IMADUNION or a mission statement can go here.
+                    </p>
+                  </div>
+                  <div class="footer-section">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                      <li><a href="about-us.html">About Us</a></li>
+                      <li><a href="news&event.html">News & Events</a></li>
+                      <li><a href="achievements.html">Achievements</a></li>
+                      <li><a href="contact-us.html">Contact Us</a></li>
+                    </ul>
+                  </div>
+                 <div class="footer-section">
+                    <h4 class="footer-title">Our Social Media</h4>
+                    <ul class="footer-social">
+                      <li><a href="https://www.instagram.com/imad_odamala?utm_source=ig_web_button_share_sheet&igsh=MTNleG5wNmIwanIzZQ==" aria-label="Instagram"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+                      <li><a href="link" aria-label="Facebook"><i class="fa-brands fa-facebook"></i> Facebook</a></li>
+                      <li><a href="link" aria-label="Whatsapp"><i class="fa-brands fa-whatsapp"></i> Whatsapp</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="footer-bottom">
+                  <p>&copy; 2025 IMADUNION. All rights reserved.</p>
+                </div>
+            `;
+
+            const navbarPlaceholder = document.getElementById('navbar-placeholder');
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+
+            if (navbarPlaceholder) {
+                navbarPlaceholder.innerHTML = navbarHTML;
+            }
+
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = footerHTML;
+            }
+            
+            // Re-add menu toggle logic AFTER injecting the navbar
+            const menuToggle = document.querySelector('.menu-toggle');
+            const rightSide = document.querySelector('.rightside');
+
+            if (menuToggle && rightSide) {
+                menuToggle.addEventListener('click', () => {
+                    rightSide.classList.toggle('show');
+                });
+            }
+
+            // --- Main Firebase Data-Fetching Logic ---
+            const achievementsGrid = document.getElementById('achievements-grid');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            let allAchievements = []; // This will store all fetched data
+
+            /**
+             * Renders an array of achievement objects into the grid.
+             */
+            function displayAchievements(achievementsArray) {
+                achievementsGrid.innerHTML = ''; // Clear existing
+                
+                if (achievementsArray.length === 0) {
+                    achievementsGrid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1;">No achievements found.</p>';
+                    return;
+                }
+                
+                achievementsArray.forEach(ach => {
+                    // 'ach.imageUrl' is the full public URL from Cloudinary
+                    const imageUrl = ach.imageUrl; 
+                    // Date field is a string, parse it to display properly
+                    const date = new Date(ach.date);
+                    const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                    
+                    const cardHTML = `
+                        <div class="achievement-card" data-category="${ach.category}">
+                            <img src="${imageUrl}" alt="${ach.title}" class="card-image" 
+                                 onerror="this.src='https://placehold.co/600x400/eee/ccc?text=Image+Error';">
+                            <div class="card-content">
+                                <p class="card-category">${ach.category}</p>
+                                <h3 class="card-title">${ach.title}</h3>
+                                <p class="card-date">${formattedDate}</p>
+                            </div>
+                        </div>
+                    `;
+                    achievementsGrid.insertAdjacentHTML('beforeend', cardHTML);
+                });
+            }
+
+            /**
+             * Fetches all achievements from Firestore and displays them.
+             */
+            async function fetchAchievements() {
+                try {
+                    const achievementsRef = collection(db, "achievements");
+                    // Query to get all docs, ordered by 'createdAt' in descending order
+                    const q = query(achievementsRef, orderBy("createdAt", "desc"));
+                    
+                    const querySnapshot = await getDocs(q);
+                    
+                    // Map the results to a simple array of data objects
+                    allAchievements = querySnapshot.docs.map(doc => doc.data());
+                    
+                    // Display the fetched achievements
+                    displayAchievements(allAchievements);
+
+                } catch (error) {
+                    console.error("Fetch Error:", error);
+                    achievementsGrid.innerHTML = '<p style="text-align: center; color: red; grid-column: 1 / -1;">Error loading achievements. Check console for details.</p>';
+                }
+            }
+            
+            /**
+             * Adds click listeners to the filter buttons.
+             */
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button state
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const category = button.getAttribute('data-category');
+                    
+                    if (category === 'all') {
+                        // If "All" is clicked, show all achievements
+                        displayAchievements(allAchievements); 
+                    } else {
+                        // Otherwise, filter the local array and display
+                        const filtered = allAchievements.filter(ach => ach.category === category);
+                        displayAchievements(filtered);
+                    }
+                });
+            });
+
+            // --- Initial Load ---
+            // Fetch achievements as soon as the page loads
+            fetchAchievements();
+        });
+    </script>
+</body>
+</html>
